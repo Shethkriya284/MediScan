@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="padding: 2rem; max-width: 600px; margin: 0 auto;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">
+        <i class="fas fa-calendar-alt"></i> Reschedule Appointment
+    </h2>
+    
+    <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <h4 style="margin: 0 0 0.5rem 0;">Current Appointment</h4>
+            <p style="margin: 0;"><strong>Doctor:</strong> {{ appointment.doctor_profile.user.username }}</p>
+            <p style="margin: 0;"><strong>Date:</strong> {{ appointment.date_time.strftime('%B %d, %Y') }}</p>
+            <p style="margin: 0;"><strong>Time:</strong> {{ appointment.date_time.strftime('%I:%M %p') }}</p>
+        </div>
+        
+        <form method="POST">
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">New Date</label>
+                <input type="date" name="new_date" required 
+                       style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px;">
+            </div>
+            
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">New Time</label>
+                <input type="time" name="new_time" required 
+                       style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px;">
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <a href="{{ url_for('appointments') }}" class="btn btn-outline-secondary" style="flex: 1; text-align: center; padding: 0.75rem; text-decoration: none; border-radius: 8px;">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary" style="flex: 1; padding: 0.75rem; background: linear-gradient(135deg, #2E8B57, #3CB371); border: none; border-radius: 8px; font-weight: 600;">
+                    Reschedule
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

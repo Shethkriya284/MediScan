@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container animate-fadedown" style="padding-top: 100px; padding-bottom: 50px;">
+    <div style="margin-bottom: 2rem;">
+        <h2 style="font-size: 2rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.5rem;">
+            <i class="fas fa-pills"></i> Medicine Database
+        </h2>
+        <p style="color: #6b7280;">Explore our comprehensive database of {{ medicines|length }}+ medications
+            with AI-powered insights.</p>
+    </div>
+
+    <div class="search-container shadow-sm p-4 rounded-4 bg-white mb-5"
+        style="max-width: 700px; border: 1px solid rgba(0,0,0,0.05);">
+        <form action="{{ url_for('medicines') }}" method="GET" id="medicineSearchForm" class="d-flex gap-2">
+            <div class="input-group">
+                <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-search"
+                        style="color: var(--primary-color);"></i></span>
+                <input type="text" id="medicineSearchInput" name="q" class="form-control border-start-0 ps-0"
+                    placeholder="Type to search (e.g., 'P' for Paracetamol, Penicillin...)"
+                    value="{{ query if query else '' }}" autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-primary px-4 rounded-3 shadow-sm"
+                style="background-color: var(--primary-color);">Search</button>
+        </form>
+    </div>
+
+    <div id="medicineGrid" class="row g-4">
+        {% if medicines %}
+        {% for med in medicines %}
+        <div class="col-md-6 col-lg-4 medicine-card-wrapper" data-name="{{ med.name.lower() }}">
+            <div class="card h-100 border-0 shadow-hover transition-all rounded-4 overflow-hidden">
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h4 class="fw-bold mb-0" style="color: var(--primary-color);">{{ med.name }}</h4>
+                        <span class="badge rounded-pill"
+                            style="background-color: var(--background-color); color: var(--primary-color); border: 1px solid var(--accent-color);">{{
+                            med.age_group }}</span>
+                    </div>
+                    <p class="text-muted small mb-4"
+                        style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; height: 4.5em; line-clamp: 3;">
+                        {{ med.description }}
+                    </p>
+                    <a href="{{ url_for('medicine_detail', id=med.id) }}" class="btn w-100 rounded-pill"
+                        style="border: 2px solid var(--primary-color); color: var(--primary-color); background: transparent;">
+                        View Deep Analysis <i class="fas fa-arrow-right ms-2 scale-hover"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-pills fa-4x text-light"></i>
+            </div>
+            <h3 class="text-secondary">No medicines found</h3>
+            <p class="text-muted">Try searching for a different name or browse the full list.</p>
+            <a href="{{ url_for('medicines') }}" class="btn btn-link">View All Medicines</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .shadow-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+
+    .scale-hover {
+        transition: transform 0.2s ease;
+    }
+
+    .btn:hover .scale-hover {
+        transform: translateX(4px);
+    }
+
+    .search-container {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .search-container:focus-within {
+        transform: scale(1.02);
+        box-shadow: 0 10px 30px rgba(46, 139, 87, 0.1) !important;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('medicineSearchInput');
+        const cards = document.querySelectorAll('.medicine-card-wrapper');
+        const grid = document.getElementById('medicineGrid');
+
+        searchInput.addEventListener('input', function (e) {
+            const term = e.target.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                // Check if matches from start as requested
+                if (name.startsWith(term) || (term.length > 2 && name.includes(term))) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Optional: show "No results" message dynamically
+            if (visibleCount === 0 && term !== "") {
+                // handle empty state dynamically if needed
+            }
+        });
+
+        // Animate cards on load
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 50);
+        });
+    });
+</script>
+{% endblock %}

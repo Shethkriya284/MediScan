@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediScan - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/font-awesome/all.min.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .auth-header {
+            margin-bottom: 30px;
+        }
+
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            color: #718096;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f7fafc;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4299e1;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .password-hint {
+            font-size: 12px;
+            color: #a0aec0;
+            margin-top: 5px;
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .primary-button {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+        }
+
+        .primary-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(66, 153, 225, 0.3);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #a0aec0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider span {
+            padding: 0 15px;
+            font-size: 14px;
+        }
+
+        .social-button {
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .social-button:hover {
+            border-color: #cbd5e0;
+            transform: translateY(-1px);
+        }
+
+        .google-button {
+            margin-bottom: 10px;
+        }
+
+        .apple-button {
+            margin-bottom: 20px;
+        }
+
+        .auth-switch {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .auth-switch a {
+            color: #4299e1;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #f0fff4;
+            color: #22543d;
+            border: 1px solid #c6f6d5;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+
+        .show-register {
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <!-- Login Form -->
+        <div id="loginForm">
+            <div class="auth-header">
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to your MediScan account</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'error' if category == 'error' else 'success' }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="form-group">
+                    <input type="email" name="email" class="form-input" placeholder="Email" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" name="password" class="form-input" placeholder="Password" required
+                        minlength="6">
+                    <div class="password-hint">Password must be at least 6 characters</div>
+                </div>
+
+                <button type="submit" class="auth-button primary-button">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>Or</span>
+            </div>
+
+            <button class="auth-button social-button google-button" onclick="signInWithGoogle()">
+                <i class="fab fa-google"></i>
+                Continue with Google
+            </button>
+
+            <button class="auth-button social-button apple-button" onclick="signInWithApple()">
+                <i class="fab fa-apple"></i>
+                Continue with Apple
+            </button>
+
+            <div class="auth-switch">
+                Don't have an account? <a href="#" onclick="showRegister()">Register</a>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerForm" class="show-register">
+            <div class="auth-header">
+                <h1 class="auth-title">Register</h1>
+            </div>
+
+            <form method="POST" action="{{ url_for('signup') }}">
+                <div class="form-group">
+                    <input type="text" name="username" class="form-input" placeholder="Name/Nickname" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="email" name="email" class="form-input" placeholder="Email" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="tel" name="phone" class="form-input" placeholder="Phone Number (Optional)">
+                </div>
+
+                <div class="form-group">
+                    <input type="password" name="password" class="form-input" placeholder="Password" required
+                        minlength="6">
+                    <div class="password-hint">The password should be at least 6 characters long</div>
+                </div>
+
+                <button type="submit" class="auth-button primary-button">
+                    Register
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>Or</span>
+            </div>
+
+            <button class="auth-button social-button google-button" onclick="signInWithGoogle()">
+                <i class="fab fa-google"></i>
+                Continue with Google
+            </button>
+
+            <button class="auth-button social-button apple-button" onclick="signInWithApple()">
+                <i class="fab fa-apple"></i>
+                Continue with Apple
+            </button>
+
+            <div class="auth-switch">
+                Already a user? <a href="#" onclick="showLogin()">Log in</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+        }
+
+        function signInWithGoogle() {
+            // For demo purposes - in production, integrate with Google OAuth
+            alert('Google Sign-In would be integrated here. For demo, use: patient@mediscan.com / patient123');
+        }
+
+        function signInWithApple() {
+            // For demo purposes - in production, integrate with Apple Sign-In
+            alert('Apple Sign-In would be integrated here. For demo, use: doctor@mediscan.com / doctor123');
+        }
+
+        // Check URL parameters to show register form if needed
+        if (window.location.pathname.includes('register') || window.location.hash.includes('register')) {
+            showRegister();
+        }
+    </script>
+</body>
+
+</html>
