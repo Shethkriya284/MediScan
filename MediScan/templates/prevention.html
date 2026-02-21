@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="padding: 2rem 1rem;">
+    <div style="margin-bottom: 2rem;">
+        <h2 style="font-size: 2rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.5rem;">
+            <i class="fas fa-shield-heart"></i> Prevention & Health Tips
+        </h2>
+        <p style="color: #6b7280;">Stay healthy with expert-recommended preventive care tips</p>
+    </div>
+
+    <!-- Categories -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 12px; padding: 1.5rem; text-align: center;">
+            <i class="fas fa-heartbeat" style="font-size: 2.5rem; margin-bottom: 0.5rem;"></i>
+            <h3 style="margin: 0; font-size: 1.2rem;">Heart Health</h3>
+        </div>
+        <div style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border-radius: 12px; padding: 1.5rem; text-align: center;">
+            <i class="fas fa-brain" style="font-size: 2.5rem; margin-bottom: 0.5rem;"></i>
+            <h3 style="margin: 0; font-size: 1.2rem;">Mental Health</h3>
+        </div>
+        <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border-radius: 12px; padding: 1.5rem; text-align: center;">
+            <i class="fas fa-apple-alt" style="font-size: 2.5rem; margin-bottom: 0.5rem;"></i>
+            <h3 style="margin: 0; font-size: 1.2rem;">Nutrition</h3>
+        </div>
+        <div style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border-radius: 12px; padding: 1.5rem; text-align: center;">
+            <i class="fas fa-running" style="font-size: 2.5rem; margin-bottom: 0.5rem;"></i>
+            <h3 style="margin: 0; font-size: 1.2rem;">Exercise</h3>
+        </div>
+    </div>
+
+    <!-- Health Tips Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">
+        
+        <!-- Tip 1: Heart Health -->
+        <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 4px solid #10b981;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; background: #d1fae5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #10b981; font-size: 1.5rem;">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3 style="margin: 0; font-weight: 600; color: #1a1a2e;">Cardiovascular Health</h3>
+            </div>
+            <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; line-height: 1.8;">
+                <li>Exercise 30 minutes daily (walking, jogging, cycling)</li>
+                <li>Maintain healthy weight (BMI 18.5-24.9)</li>
+                <li>Limit salt intake to less than 5g per day</li>
+                <li>Avoid smoking and excessive alcohol</li>
+                <li>Regular BP and cholesterol checkups</li>
+            </ul>
+        </div>
+
+        <!-- Tip 2: Mental Health -->
+        <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 4px solid #3b82f6;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; background: #dbeafe; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #3b82f6; font-size: 1.5rem;">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3 style="margin: 0; font-weight: 600; color: #1a1a2e;">Mental Wellness</h3>
+            </div>
+            <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; line-height: 1.8;">
+                <li>Practice meditation or mindfulness daily</li>
+                <li>Get 7-8 hours of quality sleep</li>
+                <li>Stay socially connected with friends/family</li>
+                <li>Take breaks from screens and social media</li>
+                <li>Seek professional help when needed</li>
+            </ul>
+        </div>
+
+        <!-- Tip 3: Nutrition -->
+        <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 4px solid #f59e0b;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; background: #fef3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 1.5rem;">
+                    <i class="fas fa-apple-alt"></i>
+                </div>
+                <h3 style="margin: 0; font-weight: 600; color: #1a1a2e;">Balanced Diet</h3>
+            </div>
+            <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; line-height: 1.8;">
+                <li>Eat 5 servings of fruits and vegetables daily</li>
+                <li>Choose whole grains over refined grains</li>
+                <li>Include lean proteins (fish, chicken, legumes)</li>
+                <li>Drink 8-10 glasses of water daily</li>
+                <li>Limit processed foods and added sugars</li>
+            </ul>
+        </div>
+
+        <!-- Tip 4: Exercise -->
+        <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 4px solid #8b5cf6;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; background: #ede9fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #8b5cf6; font-size: 1.5rem;">
+                    <i class="fas fa-running"></i>
+                </div>
+                <h3 style="margin: 0; font-weight: 600; color: #1a1a2e;">Physical Activity</h3>
+            </div>
+            <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; line-height: 1.8;">
+                <li>150 minutes moderate exercise per week</li>
+                <li>Include strength training 2x per week</li>
+                <li>Take stairs instead of elevators</li>
+                <li>Stand and stretch every hour if sitting</li>
+                <li>Find activities you enjoy for consistency</li>
+            </ul>
+        </div>
+
+        <!-- Tip 5: Diabetes Prevention -->
+        <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 4px solid #ef4444;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; background: #fee2e2; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 1.5rem;">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <h3 style="margin: 0; font-weight: 600; color: #1a1a2e;">Diabetes Prevention</h3>
+            </div>
+            <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; line-height: 1.8;">
+                <li>Maintain healthy body weight</li>
+                <li>Regular blood sugar monitoring if at risk</li>
+                <li>Reduce refined carbohydrates intake</li>
+                <li>Increase fiber-rich foods</li>
+                <li>Annual HbA1c testing after age 45</li>
+            </ul>
+        </div>
+
+        <!-- Tip 6: Cancer Prevention -->
+        <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 4px solid #ec4899;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; background: #fce7f3; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ec4899; font-size: 1.5rem;">
+                    <i class="fas fa-ribbon"></i>
+                </div>
+                <h3 style="margin: 0; font-weight: 600; color: #1a1a2e;">Cancer Prevention</h3>
+            </div>
+            <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; line-height: 1.8;">
+                <li>Avoid tobacco in all forms</li>
+                <li>Limit alcohol consumption</li>
+                <li>Protect skin from excessive sun exposure</li>
+                <li>Get vaccinated (HPV, Hepatitis B)</li>
+                <li>Regular cancer screenings as recommended</li>
+            </ul>
+        </div>
+
+        <!-- Tip 7: Bone Health -->
+        <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 4px solid #14b8a6;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; background: #ccfbf1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #14b8a6; font-size: 1.5rem;">
+                    <i class="fas fa-bone"></i>
+                </div>
+                <h3 style="margin: 0; font-weight: 600; color: #1a1a2e;">Bone Health</h3>
+            </div>
+            <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; line-height: 1.8;">
+                <li>Adequate calcium intake (1000-1200mg daily)</li>
+                <li>Vitamin D supplementation if needed</li>
+                <li>Weight-bearing exercises regularly</li>
+                <li>Avoid excessive caffeine and alcohol</li>
+                <li>Bone density scan after age 65</li>
+            </ul>
+        </div>
+
+        <!-- Tip 8: Eye Health -->
+        <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-top: 4px solid #6366f1;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <div style="width: 50px; height: 50px; background: #e0e7ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #6366f1; font-size: 1.5rem;">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3 style="margin: 0; font-weight: 600; color: #1a1a2e;">Eye Care</h3>
+            </div>
+            <ul style="margin: 0; padding-left: 1.5rem; color: #6b7280; line-height: 1.8;">
+                <li>Follow 20-20-20 rule for screen time</li>
+                <li>Wear sunglasses with UV protection</li>
+                <li>Eat foods rich in omega-3 and vitamins</li>
+                <li>Regular eye exams every 1-2 years</li>
+                <li>Maintain proper lighting while reading</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Emergency Tips -->
+    <div style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border-radius: 12px; padding: 2rem; margin-top: 2rem;">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem; font-weight: 700;">
+            <i class="fas fa-exclamation-triangle"></i> Emergency Warning Signs
+        </h3>
+        <p style="margin: 0 0 1rem 0; opacity: 0.9;">Seek immediate medical attention if you experience:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                <strong>• Chest pain or pressure</strong>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                <strong>• Difficulty breathing</strong>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                <strong>• Sudden severe headache</strong>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                <strong>• Weakness or numbness</strong>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                <strong>• Severe abdominal pain</strong>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px;">
+                <strong>• Uncontrolled bleeding</strong>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

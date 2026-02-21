@@ -1,0 +1,210 @@
+================================================================================
+  GMAIL NOT WORKING - HERE'S EXACTLY WHAT TO DO
+================================================================================
+
+CURRENT STATUS:
+✅ Email system working with console OTP (fallback)
+⚠️ Gmail emails not being sent - needs App Password
+
+YOUR EMAIL: shethkriya2842@gmail.com ✅ (Already configured)
+PASSWORD: YOUR_16_CHAR_APP_PASSWORD_HERE ⚠️ (Needs your App Password)
+
+================================================================================
+  FOLLOW THESE 5 STEPS
+================================================================================
+
+STEP 1: Enable 2-Factor Authentication
+---------------------------------------
+1. Open: https://myaccount.google.com/signinoptions/two-step-verification
+2. Sign in with: shethkriya2842@gmail.com
+3. Click "Get Started"
+4. Add your phone number
+5. Enter SMS verification code
+6. Click "Turn On"
+
+✅ Done when you see: "2-Step Verification is on"
+
+
+STEP 2: Generate App Password
+------------------------------
+1. Open: https://myaccount.google.com/apppasswords
+2. Select app: Mail
+3. Select device: Other (Custom name)
+4. Type: MediScan
+5. Click "Generate"
+6. COPY the 16-character password shown
+
+Example: abcd efgh ijkl mnop
+
+✅ Done when you have copied the password
+
+
+STEP 3: Update email_service.py
+--------------------------------
+1. Open file: email_service.py
+2. Find line 13:
+   SENDER_PASSWORD = 'YOUR_16_CHAR_APP_PASSWORD_HERE'
+
+3. Replace with your App Password (NO SPACES):
+   SENDER_PASSWORD = 'abcdefghijklmnop'
+
+4. Save the file (Ctrl+S)
+
+✅ Done when file is saved with your password
+
+
+STEP 4: Restart Flask Server
+-----------------------------
+1. Go to terminal where Flask is running
+2. Press: Ctrl + C (to stop)
+3. Run: python app.py (to start again)
+4. Wait for "Running on http://..." message
+
+✅ Done when server restarts successfully
+
+
+STEP 5: Test It
+---------------
+Option A - Quick test:
+  python quick_email_test.py
+
+Option B - Try signup:
+  1. Go to: http://localhost:5001/auth
+  2. Click "Sign Up"
+  3. Enter your email
+  4. Check Gmail inbox for OTP
+
+✅ Done when you receive email in Gmail!
+
+================================================================================
+  WHAT YOU'LL SEE
+================================================================================
+
+BEFORE (Console OTP):
+Terminal shows:
+  ❌ Failed to send OTP email
+  📧 OTP for user@example.com
+  🔑 Code: 123456
+
+AFTER (Gmail Working):
+Terminal shows:
+  ✅ OTP email sent successfully to user@example.com
+
+And email arrives in Gmail inbox!
+
+================================================================================
+  EXAMPLE: UPDATING THE PASSWORD
+================================================================================
+
+If Google gives you: xyzw abcd efgh ijkl
+
+WRONG (with spaces):
+SENDER_PASSWORD = 'xyzw abcd efgh ijkl'
+
+CORRECT (no spaces):
+SENDER_PASSWORD = 'xyzwabcdefghijkl'
+
+================================================================================
+  TROUBLESHOOTING
+================================================================================
+
+"App passwords option not showing"
+→ Enable 2FA first, wait 5 minutes, refresh page
+
+"Username and Password not accepted"
+→ Use App Password (not regular Gmail password)
+→ Remove ALL spaces from password
+→ Make sure 2FA is enabled
+
+"Still showing console OTP"
+→ Check password in email_service.py line 13
+→ Make sure you saved the file
+→ Restart Flask server
+
+"Email not received"
+→ Check spam/junk folder
+→ Look for "✅ OTP email sent successfully" in terminal
+→ Verify password is correct
+
+================================================================================
+  CURRENT FILE STATUS
+================================================================================
+
+File: email_service.py
+
+Line 12: SENDER_EMAIL = 'shethkriya2842@gmail.com'
+         ✅ CORRECT - Your email is configured
+
+Line 13: SENDER_PASSWORD = 'YOUR_16_CHAR_APP_PASSWORD_HERE'
+         ⚠️ UPDATE THIS - Replace with your App Password
+
+Line 14: SENDER_NAME = 'MediScan Team'
+         ✅ CORRECT - No changes needed
+
+================================================================================
+  QUICK LINKS
+================================================================================
+
+Enable 2FA:
+https://myaccount.google.com/signinoptions/two-step-verification
+
+Generate App Password:
+https://myaccount.google.com/apppasswords
+
+Detailed Guide:
+SETUP_GMAIL_STEP_BY_STEP.md
+
+================================================================================
+  CHECKLIST
+================================================================================
+
+[ ] 2FA enabled on Gmail
+[ ] App Password generated
+[ ] Password copied (16 characters)
+[ ] email_service.py opened
+[ ] Line 13 updated with password
+[ ] Spaces removed from password
+[ ] File saved
+[ ] Flask server stopped (Ctrl+C)
+[ ] Flask server started (python app.py)
+[ ] Test email sent
+[ ] Email received in Gmail
+
+================================================================================
+  IMPORTANT NOTES
+================================================================================
+
+1. App Password ≠ Gmail Password
+   - It's a special 16-character code
+   - Only for this app
+   - Can be revoked anytime
+
+2. Remove ALL spaces
+   - Google shows: abcd efgh ijkl mnop
+   - You type: abcdefghijklmnop
+
+3. Restart server after changes
+   - Ctrl+C to stop
+   - python app.py to start
+
+4. Check terminal for success message
+   - Look for: ✅ OTP email sent successfully
+
+================================================================================
+  TIME REQUIRED
+================================================================================
+
+Step 1 (2FA): 2 minutes
+Step 2 (App Password): 1 minute
+Step 3 (Update file): 30 seconds
+Step 4 (Restart): 10 seconds
+Step 5 (Test): 30 seconds
+
+Total: ~5 minutes
+
+================================================================================
+
+READY? Start with Step 1!
+Open: https://myaccount.google.com/signinoptions/two-step-verification
+
+Need help? Read: SETUP_GMAIL_STEP_BY_STEP.md

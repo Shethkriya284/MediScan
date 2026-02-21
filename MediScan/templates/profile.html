@@ -1,0 +1,797 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="padding: 2rem 1rem;">
+    <!-- Profile Header -->
+    <div
+        style="background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 2rem; overflow: hidden;">
+        <div style="background: #2E8B57; padding: 2.5rem 2rem; text-align: center; color: white; position: relative;">
+            <div style="position: relative; display: inline-block; margin-bottom: 1rem;">
+                <img src="{{ current_user.profile_image or 'https://via.placeholder.com/150' }}" alt="Profile"
+                    style="width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 5px solid rgba(255,255,255,0.3); box-shadow: 0 8px 16px rgba(0,0,0,0.15);">
+                <button onclick="document.getElementById('profile_image_input').click()"
+                    style="position: absolute; bottom: 5px; right: 5px; background: white; color: #2E8B57; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: transform 0.2s;">
+                    <i class="fas fa-camera"></i>
+                </button>
+            </div>
+            <h1 style="margin: 0; font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px;">{{ current_user.username
+                }}</h1>
+            <p style="opacity: 0.9; margin: 0.5rem 0 1.5rem 0; font-weight: 500;">{{ current_user.email }}</p>
+
+            <!-- Completion Progress Bar -->
+            {% set profile_score = 0 %}
+            {% if current_user.date_of_birth %}{% set profile_score = profile_score + 10 %}{% endif %}
+            {% if current_user.gender %}{% set profile_score = profile_score + 10 %}{% endif %}
+            {% if current_user.blood_group %}{% set profile_score = profile_score + 10 %}{% endif %}
+            {% if current_user.patient_profile %}
+            {% if current_user.patient_profile.marital_status %}{% set profile_score = profile_score + 10 %}{% endif %}
+            {% if current_user.patient_profile.height %}{% set profile_score = profile_score + 10 %}{% endif %}
+            {% if current_user.patient_profile.weight %}{% set profile_score = profile_score + 10 %}{% endif %}
+            {% if current_user.patient_profile.allergies %}{% set profile_score = profile_score + 10 %}{% endif %}
+            {% if current_user.patient_profile.chronic_diseases %}{% set profile_score = profile_score + 10 %}{% endif
+            %}
+            {% if current_user.patient_profile.smoking_habits %}{% set profile_score = profile_score + 10 %}{% endif %}
+            {% if current_user.patient_profile.occupation %}{% set profile_score = profile_score + 10 %}{% endif %}
+            {% endif %}
+
+            <div style="max-width: 400px; margin: 0 auto;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 600;">
+                    <span>Your health profile</span>
+                    <span>{{ profile_score }}% Complete</span>
+                </div>
+                <div class="progress"
+                    style="height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden;">
+                    <div class="progress-bar" role="progressbar"
+                        style="width: {{ profile_score }}%; background: white; transition: width 1s ease;"
+                        aria-valuenow="{{ profile_score }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs (Segmented Control Style) -->
+        <div style="padding: 1rem 2rem; background: #f8fafc;">
+            <ul class="nav nav-pills nav-fill" id="profileTabs" role="tablist"
+                style="background: #e2e8f0; padding: 4px; border-radius: 12px; border: 1px solid #cbd5e1;">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal"
+                        type="button" role="tab" style="border-radius: 10px; font-weight: 700; padding: 0.6rem 1rem;">
+                        Personal
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="medical-tab" data-bs-toggle="tab" data-bs-target="#medical"
+                        type="button" role="tab" style="border-radius: 10px; font-weight: 700; padding: 0.6rem 1rem;">
+                        Medical
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="lifestyle-tab" data-bs-toggle="tab" data-bs-target="#lifestyle"
+                        type="button" role="tab" style="border-radius: 10px; font-weight: 700; padding: 0.6rem 1rem;">
+                        Lifestyle
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings"
+                        type="button" role="tab" style="border-radius: 10px; font-weight: 700; padding: 0.6rem 1rem;">
+                        Settings
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Form -->
+    <form action="{{ url_for('update_profile') }}" method="POST" id="profileForm" enctype="multipart/form-data">
+        <!-- Profile Image Input (Hidden, triggered by camera button) -->
+        <input type="file" name="profile_image" id="profile_image_input" style="display: none;" accept="image/*"
+            onchange="previewImage(this)">
+
+        <div class="tab-content" id="profileTabsContent">
+
+            <!-- Personal Information Tab -->
+            <div class="tab-pane fade show active" id="personal" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4 text-primary fw-bold">Personal Details</h4>
+                        <div class="row g-4">
+                            <!-- Read Only Fields -->
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-bold">Full Name</label>
+                                <input type="text" class="form-control bg-light" value="{{ current_user.username }}"
+                                    readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-bold">Email Address</label>
+                                <input type="email" class="form-control bg-light" value="{{ current_user.email }}"
+                                    readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-bold">Phone Number</label>
+                                <input type="tel" class="form-control bg-light"
+                                    value="{{ current_user.phone or 'Not Provided' }}" readonly>
+                            </div>
+
+                            <!-- Editable Fields -->
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-bold">Date of Birth</label>
+                                <input type="date" class="form-control" name="date_of_birth"
+                                    value="{{ current_user.date_of_birth.strftime('%Y-%m-%d') if current_user.date_of_birth else '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-bold">Gender</label>
+                                <select class="form-select" name="gender">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male" {{ 'selected' if current_user.gender=='Male' }}>Male</option>
+                                    <option value="Female" {{ 'selected' if current_user.gender=='Female' }}>Female
+                                    </option>
+                                    <option value="Other" {{ 'selected' if current_user.gender=='Other' }}>Other
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-bold">Blood Group</label>
+                                <select class="form-select" name="blood_group">
+                                    <option value="">Select Blood Group</option>
+                                    <option value="A+" {{ 'selected' if current_user.blood_group=='A+' }}>A+</option>
+                                    <option value="A-" {{ 'selected' if current_user.blood_group=='A-' }}>A-</option>
+                                    <option value="B+" {{ 'selected' if current_user.blood_group=='B+' }}>B+</option>
+                                    <option value="B-" {{ 'selected' if current_user.blood_group=='B-' }}>B-</option>
+                                    <option value="O+" {{ 'selected' if current_user.blood_group=='O+' }}>O+</option>
+                                    <option value="O-" {{ 'selected' if current_user.blood_group=='O-' }}>O-</option>
+                                    <option value="AB+" {{ 'selected' if current_user.blood_group=='AB+' }}>AB+</option>
+                                    <option value="AB-" {{ 'selected' if current_user.blood_group=='AB-' }}>AB-</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-bold">Marital Status</label>
+                                <select class="form-select" name="marital_status">
+                                    <option value="">Select Status</option>
+                                    <option value="Single" {{ 'selected' if current_user.patient_profile and
+                                        current_user.patient_profile.marital_status=='Single' }}>Single</option>
+                                    <option value="Married" {{ 'selected' if current_user.patient_profile and
+                                        current_user.patient_profile.marital_status=='Married' }}>Married</option>
+                                    <option value="Divorced" {{ 'selected' if current_user.patient_profile and
+                                        current_user.patient_profile.marital_status=='Divorced' }}>Divorced</option>
+                                    <option value="Widowed" {{ 'selected' if current_user.patient_profile and
+                                        current_user.patient_profile.marital_status=='Widowed' }}>Widowed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-muted small fw-bold">Height (cm)</label>
+                                <input type="number" step="0.1" class="form-control" name="height"
+                                    value="{{ current_user.patient_profile.height if current_user.patient_profile else '' }}">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label text-muted small fw-bold">Weight (kg)</label>
+                                <input type="number" step="0.1" class="form-control" name="weight"
+                                    value="{{ current_user.patient_profile.weight if current_user.patient_profile else '' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-bold">Emergency Contact</label>
+                                <input type="text" class="form-control" name="emergency_contact"
+                                    placeholder="Name & Phone"
+                                    value="{{ current_user.patient_profile.emergency_contact if current_user.patient_profile else '' }}">
+                            </div>
+                        </div>
+                        <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-primary px-4 py-2 fw-bold"
+                                style="border-radius: 10px;">
+                                <i class="fas fa-save me-2"></i>Save Personal Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Information Tab -->
+            <div class="tab-pane fade" id="medical" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-body p-0">
+                        <div style="background: white;">
+                            {% set p = current_user.patient_profile %}
+
+                            <!-- Allergies -->
+                            <div class="medical-item-row"
+                                style="padding: 1.25rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="margin: 0; font-weight: 600; color: #1e293b; font-size: 1.1rem;">
+                                        Allergies</h5>
+                                    <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.9rem;"
+                                        id="summary_allergies">
+                                        {{ p.allergies if p and p.allergies else 'None added' }}
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-link p-0 text-decoration-none"
+                                    style="color: #2E8B57; font-weight: 700;"
+                                    onclick="openMedicalModal('allergies', 'Allergies', 'Are you allergic to anything?', 'e.g., Peanuts, Penicillin')">
+                                    {{ 'Edit' if p and p.allergies else 'add' }}
+                                </button>
+                                <input type="hidden" name="allergies" id="input_allergies"
+                                    value="{{ p.allergies if p else '' }}">
+                            </div>
+
+                            <!-- Medications -->
+                            <div class="medical-item-row"
+                                style="padding: 1.25rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="margin: 0; font-weight: 600; color: #1e293b; font-size: 1.1rem;">Current
+                                        Medications</h5>
+                                    <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.9rem;"
+                                        id="summary_current_medications">
+                                        {{ p.current_medications if p and p.current_medications else 'None added' }}
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-link p-0 text-decoration-none"
+                                    style="color: #2E8B57; font-weight: 700;"
+                                    onclick="openMedicalModal('current_medications', 'Current Medications', 'Are you currently taking any medications?', 'List current medicines')">
+                                    {{ 'Edit' if p and p.current_medications else 'add' }}
+                                </button>
+                                <input type="hidden" name="current_medications" id="input_current_medications"
+                                    value="{{ p.current_medications if p else '' }}">
+                            </div>
+
+                            <!-- Chronic Diseases -->
+                            <div class="medical-item-row"
+                                style="padding: 1.25rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="margin: 0; font-weight: 600; color: #1e293b; font-size: 1.1rem;">Chronic
+                                        Diseases</h5>
+                                    <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.9rem;"
+                                        id="summary_chronic_diseases">
+                                        {{ p.chronic_diseases if p and p.chronic_diseases else 'None added' }}
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-link p-0 text-decoration-none"
+                                    style="color: #2E8B57; font-weight: 700;"
+                                    onclick="openMedicalModal('chronic_diseases', 'Chronic Diseases', 'Do you have any chronic conditions?', 'e.g., Diabetes, Hypertension')">
+                                    {{ 'Edit' if p and p.chronic_diseases else 'add' }}
+                                </button>
+                                <input type="hidden" name="chronic_diseases" id="input_chronic_diseases"
+                                    value="{{ p.chronic_diseases if p else '' }}">
+                            </div>
+
+                            <!-- Injuries -->
+                            <div class="medical-item-row"
+                                style="padding: 1.25rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="margin: 0; font-weight: 600; color: #1e293b; font-size: 1.1rem;">Major
+                                        Injuries</h5>
+                                    <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.9rem;"
+                                        id="summary_injuries">
+                                        {{ p.injuries if p and p.injuries else 'None added' }}
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-link p-0 text-decoration-none"
+                                    style="color: #2E8B57; font-weight: 700;"
+                                    onclick="openMedicalModal('injuries', 'Major Injuries', 'Have you had any major injuries?', 'Details of past injuries')">
+                                    {{ 'Edit' if p and p.injuries else 'add' }}
+                                </button>
+                                <input type="hidden" name="injuries" id="input_injuries"
+                                    value="{{ p.injuries if p else '' }}">
+                            </div>
+
+                            <!-- Surgeries -->
+                            <div class="medical-item-row"
+                                style="padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="margin: 0; font-weight: 600; color: #1e293b; font-size: 1.1rem;">
+                                        Surgeries</h5>
+                                    <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.9rem;"
+                                        id="summary_surgeries">
+                                        {{ p.surgeries if p and p.surgeries else 'None added' }}
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-link p-0 text-decoration-none"
+                                    style="color: #2E8B57; font-weight: 700;"
+                                    onclick="openMedicalModal('surgeries', 'Surgeries', 'Have you had any surgeries?', 'Details of past surgeries')">
+                                    {{ 'Edit' if p and p.surgeries else 'add' }}
+                                </button>
+                                <input type="hidden" name="surgeries" id="input_surgeries"
+                                    value="{{ p.surgeries if p else '' }}">
+                            </div>
+                        </div>
+                        <div class="p-4 bg-white border-top">
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary px-4 py-2 fw-bold"
+                                    style="border-radius: 10px;">
+                                    <i class="fas fa-save me-2"></i>Save Medical History
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datalists for Suggestions -->
+            <datalist id="allergy_options">
+                <option value="Peanuts">
+                <option value="Penicillin">
+                <option value="Dust Mites">
+                <option value="Lactose">
+                <option value="Shellfish">
+                <option value="Latex">
+            </datalist>
+            <datalist id="disease_options">
+                <option value="Diabetes Type 1">
+                <option value="Diabetes Type 2">
+                <option value="Hypertension">
+                <option value="Asthma">
+                <option value="Thyroid Disorder">
+                <option value="Arthritis">
+            </datalist>
+
+            <!-- Medical Detail Modal (Sub-screen style) -->
+            <div class="modal fade" id="medicalDetailModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg rounded-4">
+                        <div class="modal-header border-0 pb-0 px-4 pt-4">
+                            <h5 class="modal-title fw-bold text-primary" id="modalTitle">Allergies</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <h5 class="mb-4 fw-bold" id="modalQuestion" style="color: #1a1a2e;">Are you allergic to
+                                anything?</h5>
+
+                            <div class="options-container">
+                                <label
+                                    class="medical-option-card d-flex align-items-center justify-content-between p-3 rounded-3 mb-3 border cursor-pointer"
+                                    style="cursor: pointer;">
+                                    <span class="fw-bold">No</span>
+                                    <input type="radio" name="modal_has_data" value="no" class="form-check-input"
+                                        onclick="toggleModalTextArea(false)">
+                                </label>
+
+                                <label class="medical-option-card rounded-3 border p-3 mb-3 cursor-pointer"
+                                    style="cursor: pointer;">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="fw-bold" id="modalAddLabel">Add an allergy</span>
+                                        <input type="radio" name="modal_has_data" value="yes" class="form-check-input"
+                                            onclick="toggleModalTextArea(true)">
+                                    </div>
+                                    <div id="modalTextAreaContainer" style="display: none;">
+                                        <!-- Quick Select Chips -->
+                                        <div id="modalQuickSelectContainer" class="d-flex flex-wrap gap-2 mb-3"></div>
+
+                                        <textarea id="modalTextArea" class="form-control mt-3 border-0 bg-light"
+                                            rows="3" placeholder="Type here..."></textarea>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 p-4 pt-0">
+                            <button type="button" class="btn btn-secondary px-4 rounded-pill"
+                                data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary px-4 rounded-pill fw-bold"
+                                onclick="saveModalData()">Done</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lifestyle Information Tab -->
+            <div class="tab-pane fade" id="lifestyle" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-body p-0">
+                        <div style="background: white;">
+                            {% set p = current_user.patient_profile %}
+
+                            <!-- Smoking Habits -->
+                            {% set smoking_opts = ['Non-Smoker', 'Occasional', 'Regular', 'Quitted'] %}
+                            <div class="lifestyle-item-row"
+                                style="padding: 1.25rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="margin: 0; font-weight: 600; color: #1e293b; font-size: 1.1rem;">Smoking
+                                        Habits</h5>
+                                    <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.9rem;"
+                                        id="summary_smoking_habits">
+                                        {{ p.smoking_habits if p and p.smoking_habits else 'Not selected' }}
+                                    </p>
+                                </div>
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-link p-0 text-decoration-none dropdown-toggle"
+                                        style="color: #2E8B57; font-weight: 700;" data-bs-toggle="dropdown">
+                                        {{ 'Edit' if p and p.smoking_habits else 'select' }}
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                        {% for opt in smoking_opts %}
+                                        <li><button type="button" class="dropdown-item"
+                                                onclick="selectLifestyle('smoking_habits', '{{ opt }}')">{{ opt
+                                                }}</button></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="smoking_habits" id="input_smoking_habits"
+                                    value="{{ p.smoking_habits if p else '' }}">
+                            </div>
+
+                            <!-- Alcohol -->
+                            {% set alcohol_opts = ['Non-Drinker', 'Social Drinker', 'Regular'] %}
+                            <div class="lifestyle-item-row"
+                                style="padding: 1.25rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="margin: 0; font-weight: 600; color: #1e293b; font-size: 1.1rem;">Alcohol
+                                        Consumption</h5>
+                                    <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.9rem;"
+                                        id="summary_alcohol_consumption">
+                                        {{ p.alcohol_consumption if p and p.alcohol_consumption else 'Not selected' }}
+                                    </p>
+                                </div>
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-link p-0 text-decoration-none dropdown-toggle"
+                                        style="color: #2E8B57; font-weight: 700;" data-bs-toggle="dropdown">
+                                        {{ 'Edit' if p and p.alcohol_consumption else 'select' }}
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                        {% for opt in alcohol_opts %}
+                                        <li><button type="button" class="dropdown-item"
+                                                onclick="selectLifestyle('alcohol_consumption', '{{ opt }}')">{{ opt
+                                                }}</button></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="alcohol_consumption" id="input_alcohol_consumption"
+                                    value="{{ p.alcohol_consumption if p else '' }}">
+                            </div>
+
+                            <!-- Activity Level -->
+                            {% set activity_opts = ['Sedentary', 'Lightly Active', 'Moderately Active', 'Very Active']
+                            %}
+                            <div class="lifestyle-item-row"
+                                style="padding: 1.25rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="margin: 0; font-weight: 600; color: #1e293b; font-size: 1.1rem;">Activity
+                                        Level</h5>
+                                    <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.9rem;"
+                                        id="summary_activity_level">
+                                        {{ p.activity_level if p and p.activity_level else 'Not selected' }}
+                                    </p>
+                                </div>
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-link p-0 text-decoration-none dropdown-toggle"
+                                        style="color: #2E8B57; font-weight: 700;" data-bs-toggle="dropdown">
+                                        {{ 'Edit' if p and p.activity_level else 'select' }}
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                        {% for opt in activity_opts %}
+                                        <li><button type="button" class="dropdown-item"
+                                                onclick="selectLifestyle('activity_level', '{{ opt }}')">{{ opt
+                                                }}</button></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="activity_level" id="input_activity_level"
+                                    value="{{ p.activity_level if p else '' }}">
+                            </div>
+
+                            <!-- Food Preference -->
+                            {% set food_opts = ['Vegetarian', 'Non-Vegetarian', 'Vegan', 'Eggetarian'] %}
+                            <div class="lifestyle-item-row"
+                                style="padding: 1.25rem 2rem; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="margin: 0; font-weight: 600; color: #1e293b; font-size: 1.1rem;">Food
+                                        Preference</h5>
+                                    <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.9rem;"
+                                        id="summary_food_preference">
+                                        {{ p.food_preference if p and p.food_preference else 'Not selected' }}
+                                    </p>
+                                </div>
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-link p-0 text-decoration-none dropdown-toggle"
+                                        style="color: #2E8B57; font-weight: 700;" data-bs-toggle="dropdown">
+                                        {{ 'Edit' if p and p.food_preference else 'select' }}
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                        {% for opt in food_opts %}
+                                        <li><button type="button" class="dropdown-item"
+                                                onclick="selectLifestyle('food_preference', '{{ opt }}')">{{ opt
+                                                }}</button></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <input type="hidden" name="food_preference" id="input_food_preference"
+                                    value="{{ p.food_preference if p else '' }}">
+                            </div>
+
+                            <!-- Occupation -->
+                            <div class="lifestyle-item-row"
+                                style="padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h5 style="margin: 0; font-weight: 600; color: #1e293b; font-size: 1.1rem;">
+                                        Occupation</h5>
+                                    <p style="margin: 0.25rem 0 0 0; color: #64748b; font-size: 0.9rem;"
+                                        id="summary_occupation">
+                                        {{ p.occupation if p and p.occupation else 'Not specified' }}
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-link p-0 text-decoration-none"
+                                    style="color: #2E8B57; font-weight: 700;" onclick="openOccupationModal()">
+                                    {{ 'Edit' if p and p.occupation else 'add' }}
+                                </button>
+                                <input type="hidden" name="occupation" id="input_occupation"
+                                    value="{{ p.occupation if p else '' }}">
+                            </div>
+                        </div>
+                        <div class="p-4 bg-white border-top">
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary px-4 py-2 fw-bold"
+                                    style="border-radius: 10px;">
+                                    <i class="fas fa-save me-2"></i>Save Lifestyle Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</form>
+
+<!-- Settings Tab (Separate Form) -->
+<div class="tab-content">
+    <div class="tab-pane fade" id="settings" role="tabpanel">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <h4 class="mb-4 text-primary fw-bold">Account Settings</h4>
+
+                <div class="section-container bg-light p-4 rounded-4 mb-4">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-lock text-warning me-2"></i>Change Password</h5>
+                    <form action="{{ url_for('reset_password') }}" method="POST">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Current Password</label>
+                                <input type="password" name="current_password" class="form-control" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">New Password</label>
+                                <input type="password" name="new_password" class="form-control" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Confirm New Password</label>
+                                <input type="password" name="confirm_password" class="form-control" required>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold">
+                                    Update Password
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="section-container p-4 rounded-4 border">
+                    <h5 class="fw-bold mb-3 text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Danger Zone
+                    </h5>
+                    <p class="text-muted small mb-3">Once you delete your account, there is no going back. Please be
+                        certain.</p>
+                    <button class="btn btn-outline-danger rounded-pill px-4" onclick="confirmDelete()">
+                        Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dummy file input for profile image -->
+    <!-- Dummy file input removed, moved inside form -->
+</div>
+
+<script>
+    function toggleField(fieldId, show) {
+        const container = document.getElementById(fieldId + '_container');
+        const input = container.querySelector('input, textarea');
+
+        if (show) {
+            container.style.display = 'block';
+            if (input) setTimeout(() => input.focus(), 100);
+        } else {
+            container.style.display = 'none';
+            if (input) input.value = ''; // Clear if No is selected
+        }
+    }
+
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.querySelector('img[alt="Profile"]').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Modal Logic for Medical Entries
+    let currentFieldId = '';
+    const medicalModal = new bootstrap.Modal(document.getElementById('medicalDetailModal'));
+
+    function openMedicalModal(fieldId, label, question, placeholder) {
+        currentFieldId = fieldId;
+        document.getElementById('modalTitle').textContent = label;
+        document.getElementById('modalQuestion').textContent = question;
+        document.getElementById('modalAddLabel').textContent = 'Add ' + label.toLowerCase().slice(0, -1);
+
+        const textarea = document.getElementById('modalTextArea');
+        textarea.placeholder = placeholder;
+        textarea.value = '';
+
+        const currentValue = document.getElementById('input_' + fieldId).value;
+        const yesRadio = document.querySelector('input[name="modal_has_data"][value="yes"]');
+        const noRadio = document.querySelector('input[name="modal_has_data"][value="no"]');
+
+        const quickSelect = document.getElementById('modalQuickSelectContainer');
+        quickSelect.innerHTML = '';
+        const options = {
+            'allergies': ['Peanuts', 'Penicillin', 'Dust Mites', 'Lactose', 'Shellfish', 'Latex'],
+            'chronic_diseases': ['Diabetes', 'Hypertension', 'Asthma', 'Heart Disease', 'Arthritis', 'Thyroid'],
+            'current_medications': ['Paracetamol', 'Amoxicillin', 'Metformin', 'Lisinopril', 'Atorvastatin'],
+            'surgeries': ['Appendectomy', 'Gallbladder', 'C-Section', 'Knee Replacement', 'Hernia'],
+            'injuries': ['Fracture', 'Dislocation', 'Concussion', 'Sprain', 'Burn']
+        };
+
+        if (options[fieldId]) {
+            options[fieldId].forEach(opt => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn btn-outline-secondary btn-sm rounded-pill px-3 py-1';
+                btn.style.fontSize = '0.8rem';
+                btn.textContent = '+ ' + opt;
+                btn.onclick = () => {
+                    yesRadio.checked = true;
+                    toggleModalTextArea(true);
+                    const current = textarea.value.trim();
+                    if (current) {
+                        if (!current.split(', ').includes(opt)) textarea.value = current + ', ' + opt;
+                    } else {
+                        textarea.value = opt;
+                    }
+                };
+                quickSelect.appendChild(btn);
+            });
+        }
+
+        if (currentValue && currentValue.trim() !== '') {
+            textarea.value = currentValue;
+            yesRadio.checked = true;
+            container.style.display = 'block';
+        } else {
+            textarea.value = '';
+            noRadio.checked = true;
+            container.style.display = 'none';
+        }
+
+        medicalModal.show();
+    }
+
+    function toggleModalTextArea(show) {
+        document.getElementById('modalTextAreaContainer').style.display = show ? 'block' : 'none';
+        if (show) setTimeout(() => document.getElementById('modalTextArea').focus(), 100);
+    }
+
+    function saveModalData() {
+        const checkedRadio = document.querySelector('input[name="modal_has_data"]:checked');
+        const hasData = checkedRadio && checkedRadio.value === 'yes';
+        const value = hasData ? document.getElementById('modalTextArea').value.trim() : '';
+
+        // Update hidden input
+        const hiddenInput = document.getElementById('input_' + currentFieldId);
+        if (hiddenInput) hiddenInput.value = value;
+
+        // Update summary text
+        const summary = document.getElementById('summary_' + currentFieldId);
+        if (summary) {
+            summary.textContent = value !== '' ? value : (currentFieldId === 'occupation' ? 'Not specified' : 'None added');
+
+            // Update button text
+            const row = summary.closest('.medical-item-row') || summary.closest('.lifestyle-item-row');
+            if (row) {
+                const btn = row.querySelector('button');
+                if (btn) btn.textContent = value !== '' ? 'Edit' : 'add';
+            }
+        }
+
+        medicalModal.hide();
+    }
+
+    // Lifestyle Logic
+    function selectLifestyle(fieldId, value) {
+        // Update hidden input
+        const hiddenInput = document.getElementById('input_' + fieldId);
+        if (hiddenInput) hiddenInput.value = value;
+
+        // Update summary display
+        const summary = document.getElementById('summary_' + fieldId);
+        if (summary) {
+            summary.textContent = value;
+
+            // Update button text
+            const row = summary.closest('.lifestyle-item-row');
+            if (row) {
+                const btn = row.querySelector('.dropdown-toggle');
+                if (btn) btn.textContent = 'Edit';
+
+                // Visual indicator of change
+                row.style.backgroundColor = 'rgba(46, 139, 87, 0.05)';
+                setTimeout(() => row.style.backgroundColor = '', 500);
+            }
+        }
+    }
+
+    function openOccupationModal() {
+        openMedicalModal('occupation', 'Occupation', 'What is your current occupation?', 'e.g., Software Engineer, Student');
+        const addLabel = document.getElementById('modalAddLabel');
+        if (addLabel) addLabel.textContent = 'Update occupation';
+    }
+
+    function confirmDelete() {
+        if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+            alert("Account deletion request submitted. (Mock feature for demo)");
+        }
+    }
+
+    // Tab Switching Logic
+    document.addEventListener('DOMContentLoaded', function () {
+        const saveBtn = document.getElementById('saveButtonContainer');
+        if (saveBtn) saveBtn.style.display = 'block';
+
+        const profileTabs = document.querySelectorAll('button[data-bs-toggle="tab"]');
+        profileTabs.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function (event) {
+                if (saveBtn) {
+                    saveBtn.style.display = (event.target.id === 'settings-tab') ? 'none' : 'block';
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    .nav-pills .nav-link {
+        color: #64748b;
+        background: transparent;
+        transition: all 0.3s;
+        border: 1px solid transparent;
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: white;
+        color: #2E8B57;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(46, 139, 87, 0.1);
+    }
+
+    .medical-item-row:hover {
+        background-color: #f8fafc;
+    }
+
+    .medical-option-card {
+        transition: all 0.2s;
+        background: #f8fafc;
+        border-color: #e2e8f0;
+    }
+
+    .medical-option-card:hover {
+        border-color: #2E8B57;
+        background: white;
+    }
+
+    .form-check-input:checked {
+        background-color: #2E8B57;
+        border-color: #2E8B57;
+    }
+
+    .medical-option-card:has(.form-check-input:checked) {
+        border-color: #2E8B57;
+        background: rgba(46, 139, 87, 0.05);
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #2E8B57;
+        box-shadow: 0 0 0 0.2rem rgba(46, 139, 87, 0.15);
+    }
+
+    .progress-bar {
+        border-radius: 10px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 800px;">
+    <a href="{{ url_for('medicines') }}"
+        style="color: var(--text-secondary); text-decoration: none; display: inline-block; margin-bottom: 1rem;">
+        <i class="fa-solid fa-arrow-left"></i> Back to Search
+    </a>
+
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <h2 style="color: var(--primary-color);">{{ medicine.name }}</h2>
+            <span
+                style="background: #e0f2fe; color: var(--primary-color); padding: 0.5rem 1rem; border-radius: 2rem; font-size: 0.9rem; font-weight: 600;">{{
+                medicine.age_group }}</span>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <h4 class="mb-4">Description</h4>
+            <p style="color: var(--text-primary); line-height: 1.8;">{{ medicine.description }}</p>
+
+            <h4 class="mb-4 mt-4">Usage & Dosage</h4>
+            <div
+                style="background: #f8fafc; padding: 1.5rem; border-radius: 0.5rem; border-left: 4px solid var(--success);">
+                {{ medicine.usage }}
+            </div>
+
+            <h4 class="mb-4 mt-4" style="color: var(--danger);">Side Effects & Warnings</h4>
+            <div
+                style="background: #fef2f2; padding: 1.5rem; border-radius: 0.5rem; border-left: 4px solid var(--danger); color: #991b1b;">
+                {{ medicine.side_effects }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
