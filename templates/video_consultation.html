@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Consultation - MediScan</title>
+    <link href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/font-awesome/all.min.css') }}" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .video-container {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-header {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .consultation-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .doctor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .consultation-details h5 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .consultation-details p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .call-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .video-main {
+            flex: 1;
+            position: relative;
+            display: flex;
+            background: #000;
+        }
+
+        .remote-video-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #remoteVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .local-video-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 200px;
+            height: 150px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        #localVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .waiting-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .waiting-screen i {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .waiting-screen h3 {
+            margin-bottom: 10px;
+        }
+
+        .waiting-screen p {
+            opacity: 0.8;
+        }
+
+        .video-controls {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .control-btn.mute {
+            background: #6c757d;
+        }
+
+        .control-btn.mute.active {
+            background: #dc3545;
+        }
+
+        .control-btn.video {
+            background: #6c757d;
+        }
+
+        .control-btn.video.active {
+            background: #dc3545;
+        }
+
+        .control-btn.end-call {
+            background: #dc3545;
+        }
+
+        .control-btn.screen-share {
+            background: #17a2b8;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-panel {
+            position: absolute;
+            right: -300px;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: right 0.3s ease;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-panel.open {
+            right: 0;
+        }
+
+        .chat-header {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+
+        .message.sent {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.received {
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .toggle-chat {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 300;
+        }
+
+        .prescription-panel {
+            position: absolute;
+            left: -400px;
+            top: 0;
+            width: 400px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: left 0.3s ease;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .prescription-panel.open {
+            left: 0;
+        }
+
+        .prescription-header {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .prescription-content {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .toggle-prescription {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 300;
+        }
+
+        @media (max-width: 768px) {
+            .local-video-container {
+                width: 120px;
+                height: 90px;
+                top: 10px;
+                right: 10px;
+            }
+
+            .chat-panel,
+            .prescription-panel {
+                width: 100%;
+            }
+
+            .video-controls {
+                padding: 15px;
+                gap: 10px;
+            }
+
+            .control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="video-container">
+        <!-- Video Header -->
+        <div class="video-header">
+            <div class="consultation-info">
+                <img src="{{ doctor.image_url or '/static/images/default-doctor.jpg' }}" alt="Doctor"
+                    class="doctor-avatar">
+                <div class="consultation-details">
+                    <h5>{{ doctor.user.username }}</h5>
+                    <p>{{ doctor.specialization }} • {{ doctor.hospital }}</p>
+                </div>
+            </div>
+            <div class="call-status">
+                <div class="status-indicator"></div>
+                <span id="callDuration">00:00</span>
+            </div>
+        </div>
+
+        <!-- Main Video Area -->
+        <div class="video-main">
+            <div class="remote-video-container">
+                <video id="remoteVideo" autoplay playsinline></video>
+                <div class="waiting-screen" id="waitingScreen">
+                    <i class="fas fa-video"></i>
+                    <h3>Waiting for {{ 'patient' if current_user.role == 'doctor' else 'doctor' }}...</h3>
+                    <p>Please wait while we connect you to the consultation</p>
+                </div>
+            </div>
+
+            <div class="local-video-container">
+                <video id="localVideo" autoplay muted playsinline></video>
+            </div>
+        </div>
+
+        <!-- Video Controls -->
+        <div class="video-controls">
+            <button class="control-btn mute" id="muteBtn" title="Mute/Unmute">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button class="control-btn video" id="videoBtn" title="Turn Video On/Off">
+                <i class="fas fa-video"></i>
+            </button>
+            <button class="control-btn screen-share" id="screenShareBtn" title="Share Screen">
+                <i class="fas fa-desktop"></i>
+            </button>
+            <button class="control-btn end-call" id="endCallBtn" title="End Call">
+                <i class="fas fa-phone-slash"></i>
+            </button>
+        </div>
+
+        <!-- Chat Panel Toggle -->
+        <button class="toggle-chat" id="toggleChatBtn" title="Toggle Chat">
+            <i class="fas fa-comments"></i>
+        </button>
+
+        <!-- Prescription Panel Toggle (Doctor Only) -->
+        {% if current_user.role == 'doctor' %}
+        <button class="toggle-prescription" id="togglePrescriptionBtn" title="Write Prescription">
+            <i class="fas fa-prescription-bottle-alt"></i>
+        </button>
+        {% endif %}
+
+        <!-- Chat Panel -->
+        <div class="chat-panel" id="chatPanel">
+            <div class="chat-header">
+                <h6><i class="fas fa-comments"></i> Chat</h6>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be added here -->
+            </div>
+            <div class="chat-input">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="chatInput" placeholder="Type a message...">
+                    <button class="btn btn-primary" id="sendChatBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prescription Panel (Doctor Only) -->
+        {% if current_user.role == 'doctor' %}
+        <div class="prescription-panel" id="prescriptionPanel">
+            <div class="prescription-header">
+                <h6><i class="fas fa-prescription-bottle-alt"></i> Write Prescription</h6>
+            </div>
+            <div class="prescription-content">
+                <form id="prescriptionForm">
+                    <div class="mb-3">
+                        <label class="form-label">Patient Name</label>
+                        <input type="text" class="form-control" value="{{ patient.username }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Diagnosis</label>
+                        <textarea class="form-control" id="diagnosis" rows="2"
+                            placeholder="Enter diagnosis..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Medications</label>
+                        <div id="medicationsList">
+                            <div class="medication-item mb-2">
+                                <input type="text" class="form-control mb-1" placeholder="Medicine name">
+                                <input type="text" class="form-control mb-1" placeholder="Dosage">
+                                <input type="text" class="form-control" placeholder="Instructions">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="addMedicationBtn">
+                            <i class="fas fa-plus"></i> Add Medicine
+                        </button>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Additional Notes</label>
+                        <textarea class="form-control" id="notes" rows="3"
+                            placeholder="Additional instructions..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-save"></i> Save Prescription
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/socket.io/socket.io.js') }}"></script>
+    <script>
+        // Video Consultation JavaScript
+        class VideoConsultation {
+            constructor() {
+                this.socket = io();
+                this.localStream = null;
+                this.remoteStream = null;
+                this.peerConnection = null;
+                this.roomId = '{{ appointment.id }}';
+                this.userRole = '{{ current_user.role }}';
+                this.isAudioMuted = false;
+                this.isVideoOff = false;
+                this.callStartTime = new Date();
+
+                this.initializeElements();
+                this.setupEventListeners();
+                this.initializeMedia();
+                this.joinRoom();
+                this.startCallTimer();
+            }
+
+            initializeElements() {
+                this.localVideo = document.getElementById('localVideo');
+                this.remoteVideo = document.getElementById('remoteVideo');
+                this.waitingScreen = document.getElementById('waitingScreen');
+                this.muteBtn = document.getElementById('muteBtn');
+                this.videoBtn = document.getElementById('videoBtn');
+                this.endCallBtn = document.getElementById('endCallBtn');
+                this.screenShareBtn = document.getElementById('screenShareBtn');
+                this.chatPanel = document.getElementById('chatPanel');
+                this.chatMessages = document.getElementById('chatMessages');
+                this.chatInput = document.getElementById('chatInput');
+            }
+
+            setupEventListeners() {
+                // Control buttons
+                this.muteBtn.addEventListener('click', () => this.toggleAudio());
+                this.videoBtn.addEventListener('click', () => this.toggleVideo());
+                this.endCallBtn.addEventListener('click', () => this.endCall());
+                this.screenShareBtn.addEventListener('click', () => this.toggleScreenShare());
+
+                // Chat functionality
+                document.getElementById('toggleChatBtn').addEventListener('click', () => {
+                    this.chatPanel.classList.toggle('open');
+                });
+
+                document.getElementById('sendChatBtn').addEventListener('click', () => this.sendMessage());
+                this.chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+
+                // Prescription panel (doctor only)
+                if (this.userRole === 'doctor') {
+                    document.getElementById('togglePrescriptionBtn').addEventListener('click', () => {
+                        document.getElementById('prescriptionPanel').classList.toggle('open');
+                    });
+
+                    document.getElementById('addMedicationBtn').addEventListener('click', () => {
+                        this.addMedicationField();
+                    });
+
+                    document.getElementById('prescriptionForm').addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.savePrescription();
+                    });
+                }
+
+                // Socket events
+                this.socket.on('user-joined', (data) => this.handleUserJoined(data));
+                this.socket.on('user-left', () => this.handleUserLeft());
+                this.socket.on('offer', (data) => this.handleOffer(data));
+                this.socket.on('answer', (data) => this.handleAnswer(data));
+                this.socket.on('ice-candidate', (data) => this.handleIceCandidate(data));
+                this.socket.on('chat-message', (data) => this.displayMessage(data));
+            }
+
+            async initializeMedia() {
+                try {
+                    this.localStream = await navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: true
+                    });
+                    this.localVideo.srcObject = this.localStream;
+                } catch (error) {
+                    console.error('Error accessing media devices:', error);
+                    alert('Unable to access camera/microphone. Please check permissions.');
+                }
+            }
+
+            joinRoom() {
+                this.socket.emit('join-room', {
+                    roomId: this.roomId,
+                    userRole: this.userRole
+                });
+            }
+
+            async handleUserJoined(data) {
+                console.log('User joined:', data);
+                this.waitingScreen.style.display = 'none';
+                await this.createPeerConnection();
+
+                if (data.userRole !== this.userRole) {
+                    // Create offer if we're the doctor (initiator)
+                    if (this.userRole === 'doctor') {
+                        const offer = await this.peerConnection.createOffer();
+                        await this.peerConnection.setLocalDescription(offer);
+                        this.socket.emit('offer', {
+                            roomId: this.roomId,
+                            offer: offer
+                        });
+                    }
+                }
+            }
+
+            handleUserLeft() {
+                this.waitingScreen.style.display = 'flex';
+                if (this.peerConnection) {
+                    this.peerConnection.close();
+                    this.peerConnection = null;
+                }
+            }
+
+            async createPeerConnection() {
+                this.peerConnection = new RTCPeerConnection({
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' }
+                    ]
+                });
+
+                // Add local stream
+                this.localStream.getTracks().forEach(track => {
+                    this.peerConnection.addTrack(track, this.localStream);
+                });
+
+                // Handle remote stream
+                this.peerConnection.ontrack = (event) => {
+                    this.remoteVideo.srcObject = event.streams[0];
+                };
+
+                // Handle ICE candidates
+                this.peerConnection.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        this.socket.emit('ice-candidate', {
+                            roomId: this.roomId,
+                            candidate: event.candidate
+                        });
+                    }
+                };
+            }
+
+            async handleOffer(data) {
+                if (!this.peerConnection) {
+                    await this.createPeerConnection();
+                }
+
+                await this.peerConnection.setRemoteDescription(data.offer);
+                const answer = await this.peerConnection.createAnswer();
+                await this.peerConnection.setLocalDescription(answer);
+
+                this.socket.emit('answer', {
+                    roomId: this.roomId,
+                    answer: answer
+                });
+            }
+
+            async handleAnswer(data) {
+                await this.peerConnection.setRemoteDescription(data.answer);
+            }
+
+            async handleIceCandidate(data) {
+                if (this.peerConnection) {
+                    await this.peerConnection.addIceCandidate(data.candidate);
+                }
+            }
+
+            toggleAudio() {
+                this.isAudioMuted = !this.isAudioMuted;
+                this.localStream.getAudioTracks().forEach(track => {
+                    track.enabled = !this.isAudioMuted;
+                });
+
+                this.muteBtn.classList.toggle('active', this.isAudioMuted);
+                this.muteBtn.innerHTML = this.isAudioMuted ?
+                    '<i class="fas fa-microphone-slash"></i>' :
+                    '<i class="fas fa-microphone"></i>';
+            }
+
+            toggleVideo() {
+                this.isVideoOff = !this.isVideoOff;
+                this.localStream.getVideoTracks().forEach(track => {
+                    track.enabled = !this.isVideoOff;
+                });
+
+                this.videoBtn.classList.toggle('active', this.isVideoOff);
+                this.videoBtn.innerHTML = this.isVideoOff ?
+                    '<i class="fas fa-video-slash"></i>' :
+                    '<i class="fas fa-video"></i>';
+            }
+
+            async toggleScreenShare() {
+                try {
+                    if (this.screenShareBtn.classList.contains('active')) {
+                        // Stop screen sharing
+                        const videoTrack = this.localStream.getVideoTracks()[0];
+                        const sender = this.peerConnection.getSenders().find(s =>
+                            s.track && s.track.kind === 'video'
+                        );
+                        if (sender) {
+                            await sender.replaceTrack(videoTrack);
+                        }
+                        this.screenShareBtn.classList.remove('active');
+                    } else {
+                        // Start screen sharing
+                        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+                            video: true
+                        });
+                        const screenTrack = screenStream.getVideoTracks()[0];
+                        const sender = this.peerConnection.getSenders().find(s =>
+                            s.track && s.track.kind === 'video'
+                        );
+                        if (sender) {
+                            await sender.replaceTrack(screenTrack);
+                        }
+                        this.screenShareBtn.classList.add('active');
+
+                        screenTrack.onended = () => {
+                            this.toggleScreenShare();
+                        };
+                    }
+                } catch (error) {
+                    console.error('Screen sharing error:', error);
+                }
+            }
+
+            endCall() {
+                if (confirm('Are you sure you want to end the consultation?')) {
+                    this.socket.emit('leave-room', { roomId: this.roomId });
+                    window.location.href = '/dashboard';
+                }
+            }
+
+            sendMessage() {
+                const message = this.chatInput.value.trim();
+                if (message) {
+                    this.socket.emit('chat-message', {
+                        roomId: this.roomId,
+                        message: message,
+                        sender: this.userRole,
+                        timestamp: new Date().toISOString()
+                    });
+                    this.chatInput.value = '';
+                }
+            }
+
+            displayMessage(data) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${data.sender === this.userRole ? 'sent' : 'received'}`;
+                messageDiv.textContent = data.message;
+                this.chatMessages.appendChild(messageDiv);
+                this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+            }
+
+            addMedicationField() {
+                const medicationsList = document.getElementById('medicationsList');
+                const medicationItem = document.createElement('div');
+                medicationItem.className = 'medication-item mb-2';
+                medicationItem.innerHTML = `
+                    <input type="text" class="form-control mb-1" placeholder="Medicine name">
+                    <input type="text" class="form-control mb-1" placeholder="Dosage">
+                    <input type="text" class="form-control" placeholder="Instructions">
+                    <button type="button" class="btn btn-sm btn-outline-danger mt-1" onclick="this.parentElement.remove()">
+                        <i class="fas fa-trash"></i> Remove
+                    </button>
+                `;
+                medicationsList.appendChild(medicationItem);
+            }
+
+            savePrescription() {
+                // Collect prescription data
+                const prescriptionData = {
+                    appointmentId: this.roomId,
+                    diagnosis: document.getElementById('diagnosis').value,
+                    medications: [],
+                    notes: document.getElementById('notes').value
+                };
+
+                // Collect medications
+                const medicationItems = document.querySelectorAll('.medication-item');
+                medicationItems.forEach(item => {
+                    const inputs = item.querySelectorAll('input');
+                    if (inputs[0].value.trim()) {
+                        prescriptionData.medications.push({
+                            name: inputs[0].value,
+                            dosage: inputs[1].value,
+                            instructions: inputs[2].value
+                        });
+                    }
+                });
+
+                // Send to server
+                fetch('/save-prescription', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(prescriptionData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Prescription saved successfully!');
+                            document.getElementById('prescriptionPanel').classList.remove('open');
+                        } else {
+                            alert('Error saving prescription: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error saving prescription');
+                    });
+            }
+
+            startCallTimer() {
+                setInterval(() => {
+                    const now = new Date();
+                    const duration = Math.floor((now - this.callStartTime) / 1000);
+                    const minutes = Math.floor(duration / 60);
+                    const seconds = duration % 60;
+                    document.getElementById('callDuration').textContent =
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                }, 1000);
+            }
+        }
+
+        // Initialize video consultation when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new VideoConsultation();
+        });
+    </script>
+</body>
+
+</html>

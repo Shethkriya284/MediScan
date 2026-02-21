@@ -1,0 +1,731 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid px-3 py-2">
+    <!-- Mini Header -->
+    <div class="d-flex align-items-center mb-2 gap-2">
+        <i class="fas fa-calendar-plus text-primary fs-5"></i>
+        <div>
+            <h5 class="fw-bold text-dark mb-0">Book Appointment</h5>
+            <p class="text-muted mb-0" style="font-size:0.8rem;">Schedule a consultation with {{ doctor.user.username }}
+            </p>
+        </div>
+    </div>
+
+    <form method="POST" id="bookingForm">
+        <div class="row g-2">
+            <!-- ===== LEFT COLUMN: Steps 1-3 ===== -->
+            <div class="col-lg-8">
+                <div class="bg-white rounded-3 shadow-sm border p-3">
+
+                    <!-- Step 1: Consultation Type -->
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2 gap-2">
+                            <span class="badge bg-primary rounded-circle"
+                                style="width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;">1</span>
+                            <span class="fw-semibold" style="font-size:0.9rem;">Consultation Type <span
+                                    class="text-danger">*</span></span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <!-- Video -->
+                            <label class="consultation-option flex-fill" style="cursor:pointer;">
+                                <input type="radio" name="consultation_type" value="video" required
+                                    style="display:none;" onchange="updateFee()">
+                                <div class="option-card text-center rounded-2 border p-2" style="transition:all 0.2s;">
+                                    <div style="font-size:1.6rem;">💻</div>
+                                    <div class="fw-semibold" style="font-size:0.8rem;">Video</div>
+                                    <div class="text-success fw-bold" style="font-size:0.8rem;">₹500</div>
+                                </div>
+                            </label>
+                            <!-- Clinic -->
+                            <label class="consultation-option flex-fill" style="cursor:pointer;">
+                                <input type="radio" name="consultation_type" value="clinic" required
+                                    style="display:none;" onchange="updateFee()">
+                                <div class="option-card text-center rounded-2 border p-2" style="transition:all 0.2s;">
+                                    <div style="font-size:1.6rem;">🏥</div>
+                                    <div class="fw-semibold" style="font-size:0.8rem;">Clinic</div>
+                                    <div class="text-success fw-bold" style="font-size:0.8rem;">₹800</div>
+                                </div>
+                            </label>
+                            <!-- Home -->
+                            <label class="consultation-option flex-fill" style="cursor:pointer;">
+                                <input type="radio" name="consultation_type" value="home" required style="display:none;"
+                                    onchange="updateFee()">
+                                <div class="option-card text-center rounded-2 border p-2" style="transition:all 0.2s;">
+                                    <div style="font-size:1.6rem;">🏠</div>
+                                    <div class="fw-semibold" style="font-size:0.8rem;">Home</div>
+                                    <div class="text-success fw-bold" style="font-size:0.8rem;">₹1500</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Date & Time -->
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-2 gap-2">
+                            <span class="badge bg-primary rounded-circle"
+                                style="width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;">2</span>
+                            <span class="fw-semibold" style="font-size:0.9rem;">Date &amp; Time <span
+                                    class="text-danger">*</span></span>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="date" name="appointment_date" required id="appointmentDate"
+                                    class="form-control form-control-sm">
+                            </div>
+                            <div class="col-6">
+                                <select name="time_slot" required class="form-select form-select-sm">
+                                    <option value="">Select time</option>
+                                    <option value="09:00 AM">09:00 AM</option>
+                                    <option value="10:00 AM">10:00 AM</option>
+                                    <option value="11:00 AM">11:00 AM</option>
+                                    <option value="12:00 PM">12:00 PM</option>
+                                    <option value="02:00 PM">02:00 PM</option>
+                                    <option value="03:00 PM">03:00 PM</option>
+                                    <option value="04:00 PM">04:00 PM</option>
+                                    <option value="05:00 PM">05:00 PM</option>
+                                    <option value="06:00 PM">06:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Patient Details -->
+                    <div>
+                        <div class="d-flex align-items-center mb-2 gap-2">
+                            <span class="badge bg-primary rounded-circle"
+                                style="width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;">3</span>
+                            <span class="fw-semibold" style="font-size:0.9rem;">Patient Details</span>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <input type="text" name="patient_name" class="form-control form-control-sm"
+                                    placeholder="👤 Patient name (leave empty if booking for yourself)">
+                            </div>
+                            <div class="col-12">
+                                <textarea name="notes" rows="2" class="form-control form-control-sm"
+                                    placeholder="📝 Symptoms / notes (optional)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ===== RIGHT COLUMN: Doctor Info + Step 4 Payment + Summary ===== -->
+            <div class="col-lg-4">
+                <div class="bg-white rounded-3 shadow-sm border p-3 h-100 d-flex flex-column gap-2">
+
+                    <!-- Doctor Info (compact) -->
+                    {% if doctor %}
+                    <div class="d-flex align-items-center gap-2 pb-2 border-bottom">
+                        <img src="{{ doctor.image_url or 'https://via.placeholder.com/40' }}"
+                            alt="{{ doctor.user.username }}" class="rounded-circle"
+                            style="width:40px;height:40px;object-fit:cover;">
+                        <div>
+                            <div class="fw-bold" style="font-size:0.85rem;">{{ doctor.user.username }}</div>
+                            <div class="text-muted" style="font-size:0.75rem;">{{ doctor.specialization }} · {{
+                                doctor.hospital }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Step 4: Payment -->
+                    <div>
+                        <div class="d-flex align-items-center mb-2 gap-2">
+                            <span class="badge bg-primary rounded-circle"
+                                style="width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;">4</span>
+                            <span class="fw-semibold" style="font-size:0.9rem;">Payment Method <span
+                                    class="text-danger">*</span></span>
+                        </div>
+                        <div class="d-flex flex-column gap-1">
+                            {% if active_plan %}
+                            <label class="payment-option" style="cursor:pointer;">
+                                <input type="radio" name="payment_method" value="Health Plan" required class="d-none"
+                                    onchange="updateFee()">
+                                <div class="payment-card border rounded-2 px-2 py-1 d-flex align-items-center gap-2"
+                                    style="border-color:#10b981!important;background:#ecfdf5;">
+                                    <span>🛡️</span>
+                                    <div>
+                                        <span class="fw-bold text-success" style="font-size:0.8rem;">Health Plan</span>
+                                        <span class="badge bg-success ms-1" style="font-size:0.6rem;">FREE</span>
+                                        <div class="text-muted" style="font-size:0.7rem;">{{ active_plan.plan_title }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
+                            {% endif %}
+                            <label class="payment-option" style="cursor:pointer;">
+                                <input type="radio" name="payment_method" value="UPI" required class="d-none"
+                                    onchange="updateFee()">
+                                <div class="payment-card border rounded-2 px-2 py-1 d-flex align-items-center gap-2">
+                                    <span>📱</span><span class="fw-semibold" style="font-size:0.85rem;">UPI /
+                                        BHIM</span>
+                                </div>
+                            </label>
+                            <label class="payment-option" style="cursor:pointer;">
+                                <input type="radio" name="payment_method" value="Card" required class="d-none"
+                                    onchange="updateFee()">
+                                <div class="payment-card border rounded-2 px-2 py-1 d-flex align-items-center gap-2">
+                                    <span>💳</span><span class="fw-semibold" style="font-size:0.85rem;">Debit / Credit
+                                        Card</span>
+                                </div>
+                            </label>
+                            <label class="payment-option" style="cursor:pointer;">
+                                <input type="radio" name="payment_method" value="NetBanking" required class="d-none"
+                                    onchange="updateFee()">
+                                <div class="payment-card border rounded-2 px-2 py-1 d-flex align-items-center gap-2">
+                                    <span>🏦</span><span class="fw-semibold" style="font-size:0.85rem;">Net
+                                        Banking</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Bill Summary -->
+                    <div class="bg-light rounded-2 p-2 border border-success border-opacity-25">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-muted">Consultation</span><span id="consultationFee"
+                                class="fw-semibold">₹500</span>
+                        </div>
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-muted">Platform Fee</span><span class="fw-semibold">₹50</span>
+                        </div>
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span class="text-muted">GST (18%)</span><span id="gstAmount" class="fw-semibold">₹99</span>
+                        </div>
+                        <hr class="my-1 border-success border-dashed">
+                        <div class="d-flex justify-content-between fw-bold text-success">
+                            <span>Total</span><span id="totalAmount">₹649</span>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-grid gap-1 mt-auto">
+                        <button type="submit" id="submitBtn" class="btn btn-sm fw-bold"
+                            style="background:linear-gradient(135deg,#2E8B57,#3CB371);color:white;border:none;">
+                            <i class="fas fa-lock me-1"></i> Pay &amp; Book
+                        </button>
+                        <a href="{{ url_for('doctors') }}" class="btn btn-outline-secondary btn-sm">Back to Doctors</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Consultation Option Styles */
+    .consultation-option input:checked+.option-card {
+        border-color: #2E8B57;
+        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(46, 139, 87, 0.3);
+    }
+
+    .consultation-option:hover .option-card {
+        border-color: #2E8B57;
+        transform: translateY(-2px);
+    }
+
+    /* Payment Option Styles */
+    .payment-option input:checked+.payment-card {
+        border-color: #3b82f6;
+        background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        transform: scale(1.05);
+    }
+
+    .payment-option:hover .payment-card {
+        border-color: #3b82f6;
+        transform: translateY(-2px);
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+    function updateFee() {
+        const consultationType = document.querySelector('input[name="consultation_type"]:checked');
+        if (!consultationType) return;
+
+        const fees = {
+            'video': 500,
+            'clinic': 800,
+            'home': 1500
+        };
+
+        const baseFee = fees[consultationType.value];
+        const platformFee = 50;
+        const gst = Math.round((baseFee + platformFee) * 0.18);
+        const total = baseFee + platformFee + gst;
+
+        document.getElementById('consultationFee').textContent = '₹' + baseFee;
+        document.getElementById('gstAmount').textContent = '₹' + gst;
+        document.getElementById('totalAmount').textContent = '₹' + total;
+    }
+
+    // Set minimum date to tomorrow
+    document.addEventListener('DOMContentLoaded', function () {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const dateInput = document.getElementById('appointmentDate');
+        if (dateInput) {
+            dateInput.min = tomorrow.toISOString().split('T')[0];
+        }
+
+        // Form validation
+        const form = document.getElementById('bookingForm');
+        form.addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent default submission
+
+            console.log('Form submitted');
+
+            const consultationType = document.querySelector('input[name="consultation_type"]:checked');
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+            const date = document.querySelector('input[name="appointment_date"]').value;
+            const timeSlot = document.querySelector('select[name="time_slot"]').value;
+
+            console.log('Consultation:', consultationType?.value);
+            console.log('Date:', date);
+            console.log('Time:', timeSlot);
+            console.log('Payment:', paymentMethod?.value);
+
+            if (!consultationType) {
+                alert('⚠️ Please select a consultation type (Video/Clinic/Home)');
+                return false;
+            }
+
+            if (!date) {
+                alert('⚠️ Please select an appointment date');
+                return false;
+            }
+
+            if (!timeSlot) {
+                alert('⚠️ Please select a time slot');
+                return false;
+            }
+
+            if (!paymentMethod) {
+                alert('⚠️ Please select a payment method');
+                return false;
+            }
+
+            // Show payment gateway modal
+            showPaymentGateway(paymentMethod.value);
+
+            return false;
+        });
+    });
+
+    function showPaymentGateway(method) {
+        const totalAmount = document.getElementById('totalAmount').textContent;
+
+        // If Health Plan, skip gateway
+        if (method === 'Health Plan') {
+            completePayment();
+            return;
+        }
+
+        const modal = document.createElement('div');
+        modal.id = 'paymentModal';
+        modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; align-items: center; justify-content: center; font-family: sans-serif;';
+
+        modal.innerHTML = `
+        <div style="background: #fff; border-radius: 12px; width: 90%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); overflow: hidden; animation: slideUp 0.3s ease;">
+            <!-- Header -->
+            <div style="background: #3b82f6; color: white; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 0.75rem; opacity: 0.8;">MediScan Healthcare</div>
+                    <div style="font-weight: 700; font-size: 1.1rem;">${totalAmount}</div>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <img src="https://razorpay.com/favicon.ico" style="width:20px; height:20px; filter: brightness(10);" onerror="this.style.display='none'">
+                    <span style="font-size: 0.8rem; opacity: 0.8;">Secure Payment</span>
+                    <button onclick="closePaymentGateway()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 1rem;">✕</button>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div style="display: flex; border-bottom: 2px solid #f3f4f6; background: #f9fafb;">
+                <button onclick="switchTab('upi')" id="tab-upi" class="pay-tab" style="flex:1; padding: 0.75rem; border: none; background: white; font-weight: 600; color: #3b82f6; border-bottom: 2px solid #3b82f6; cursor: pointer; font-size: 0.85rem;">📱 UPI</button>
+                <button onclick="switchTab('card')" id="tab-card" class="pay-tab" style="flex:1; padding: 0.75rem; border: none; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.85rem;">💳 Card</button>
+                <button onclick="switchTab('netbanking')" id="tab-netbanking" class="pay-tab" style="flex:1; padding: 0.75rem; border: none; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.85rem;">🏦 Net Banking</button>
+            </div>
+
+            <!-- UPI Tab -->
+            <div id="panel-upi" style="padding: 1.5rem;">
+                <div style="display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+                    <div onclick="selectUPI('BHIM')" style="flex:1; min-width: 80px; border: 2px solid #e5e7eb; border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#e5e7eb'">
+                        <div style="font-size: 1.5rem;">🇮🇳</div>
+                        <div style="font-size: 0.75rem; font-weight: 600; color: #1f2937; margin-top: 0.25rem;">BHIM</div>
+                    </div>
+                    <div onclick="selectUPI('Google Pay')" style="flex:1; min-width: 80px; border: 2px solid #e5e7eb; border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#e5e7eb'">
+                        <div style="font-size: 1.5rem;">🔵</div>
+                        <div style="font-size: 0.75rem; font-weight: 600; color: #1f2937; margin-top: 0.25rem;">Google Pay</div>
+                    </div>
+                    <div onclick="selectUPI('PhonePe')" style="flex:1; min-width: 80px; border: 2px solid #e5e7eb; border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#e5e7eb'">
+                        <div style="font-size: 1.5rem;">💜</div>
+                        <div style="font-size: 0.75rem; font-weight: 600; color: #1f2937; margin-top: 0.25rem;">PhonePe</div>
+                    </div>
+                    <div onclick="selectUPI('Paytm')" style="flex:1; min-width: 80px; border: 2px solid #e5e7eb; border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#e5e7eb'">
+                        <div style="font-size: 1.5rem;">🔷</div>
+                        <div style="font-size: 0.75rem; font-weight: 600; color: #1f2937; margin-top: 0.25rem;">Paytm</div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #374151; display: block; margin-bottom: 0.4rem;">Or enter UPI ID</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input id="upi-id-input" type="text" placeholder="yourname@upi" 
+                            style="flex: 1; padding: 0.6rem 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; outline: none;"
+                            onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e5e7eb'">
+                        <button onclick="verifyUPI()" style="padding: 0.6rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Verify</button>
+                    </div>
+                </div>
+                <div id="upi-status" style="font-size: 0.8rem; color: #6b7280; margin-bottom: 1rem; min-height: 1.2rem;"></div>
+                <button onclick="simulatePay('UPI')" style="width: 100%; padding: 0.85rem; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer;">
+                    Pay ${totalAmount} →
+                </button>
+            </div>
+
+            <!-- Card Tab -->
+            <div id="panel-card" style="padding: 1.5rem; display: none;">
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.8rem; font-weight: 600; color: #374151; display: block; margin-bottom: 0.4rem;">Card Number</label>
+                    <input type="text" maxlength="19" placeholder="1234 5678 9012 3456" oninput="formatCard(this)"
+                        style="width: 100%; padding: 0.7rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.95rem; letter-spacing: 2px; box-sizing: border-box;"
+                        onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e5e7eb'">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="grid-column: 1/3;">
+                        <label style="font-size: 0.8rem; font-weight: 600; color: #374151; display: block; margin-bottom: 0.4rem;">Name on Card</label>
+                        <input type="text" placeholder="Full Name"
+                            style="width: 100%; padding: 0.7rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;"
+                            onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e5e7eb'">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem; font-weight: 600; color: #374151; display: block; margin-bottom: 0.4rem;">CVV</label>
+                        <input type="password" maxlength="3" placeholder="•••"
+                            style="width: 100%; padding: 0.7rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;"
+                            onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e5e7eb'">
+                    </div>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.8rem; font-weight: 600; color: #374151; display: block; margin-bottom: 0.4rem;">Expiry</label>
+                    <input type="text" maxlength="5" placeholder="MM/YY" oninput="formatExpiry(this)"
+                        style="width: 200px; padding: 0.7rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.95rem;"
+                        onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e5e7eb'">
+                </div>
+                <button onclick="simulatePay('Card')" style="width: 100%; padding: 0.85rem; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer;">
+                    Pay Securely ${totalAmount} 🔒
+                </button>
+            </div>
+
+            <!-- Net Banking Tab -->
+            <div id="panel-netbanking" style="padding: 1.5rem; display: none;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem;">
+                    ${['SBI', 'HDFC', 'ICICI', 'Axis', 'Kotak', 'BOB'].map(b => `
+                    <div onclick="selectBank('${b}')" style="border: 2px solid #e5e7eb; border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer;"
+                        onmouseover="this.style.borderColor='#3b82f6'; this.style.background='#eff6ff'" onmouseout="this.style.borderColor='#e5e7eb'; this.style.background='white'">
+                        <div style="font-weight: 600; color: #1f2937; font-size: 0.9rem;">${b}</div>
+                        <div style="font-size: 0.7rem; color: #9ca3af;">${b} Bank</div>
+                    </div>`).join('')}
+                </div>
+                <select id="bank-select" style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; margin-bottom: 1rem;"
+                    onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#e5e7eb'">
+                    <option value="">-- Other Banks --</option>
+                    <option>Punjab National Bank</option>
+                    <option>Bank of India</option>
+                    <option>Union Bank</option>
+                    <option>Canara Bank</option>
+                    <option>Yes Bank</option>
+                </select>
+                <button onclick="simulatePay('Net Banking')" style="width: 100%; padding: 0.85rem; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer;">
+                    Proceed to Net Banking ${totalAmount}
+                </button>
+            </div>
+
+            <!-- Footer -->
+            <div style="padding: 0.75rem 1.5rem; background: #f9fafb; border-top: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <span style="font-size: 0.7rem; color: #9ca3af;">🔒 256-bit SSL Secured</span>
+                <span style="font-size: 0.7rem; color: #9ca3af;">|</span>
+                <span style="font-size: 0.7rem; color: #9ca3af;">Powered by Razorpay</span>
+            </div>
+        </div>`;
+
+        document.body.appendChild(modal);
+    }
+
+    function closePaymentGateway() {
+        const modal = document.getElementById('paymentModal');
+        if (modal) modal.remove();
+    }
+
+    function switchTab(tab) {
+        ['upi', 'card', 'netbanking'].forEach(t => {
+            document.getElementById(`panel-${t}`).style.display = (t === tab) ? 'block' : 'none';
+            const btn = document.getElementById(`tab-${t}`);
+            if (t === tab) {
+                btn.style.background = 'white';
+                btn.style.color = '#3b82f6';
+                btn.style.borderBottom = '2px solid #3b82f6';
+                btn.style.fontWeight = '600';
+            } else {
+                btn.style.background = 'transparent';
+                btn.style.color = '#6b7280';
+                btn.style.borderBottom = 'none';
+                btn.style.fontWeight = '400';
+            }
+        });
+    }
+
+    function selectUPI(app) {
+        const input = document.getElementById('upi-id-input');
+        if (input) {
+            const ids = { 'BHIM': 'yourname@upi', 'Google Pay': 'yourname@okicici', 'PhonePe': 'yourname@ybl', 'Paytm': 'yourname@paytm' };
+            input.placeholder = ids[app] || 'yourname@upi';
+            input.focus();
+        }
+        document.getElementById('upi-status').innerHTML = `<span style="color:#3b82f6;">📱 Paying via ${app}</span>`;
+    }
+
+    function selectBank(bank) {
+        document.getElementById('bank-select').value = '';
+        document.querySelectorAll('#panel-netbanking div[onclick]').forEach(el => el.style.background = 'white');
+        document.getElementById('upi-status') && null;
+    }
+
+    function verifyUPI() {
+        const val = document.getElementById('upi-id-input').value;
+        const status = document.getElementById('upi-status');
+        if (!val || !val.includes('@')) {
+            status.innerHTML = '<span style="color:#ef4444;">⚠️ Invalid UPI ID format</span>';
+            return;
+        }
+        status.innerHTML = '<span style="color:#6b7280;">⏳ Verifying...</span>';
+        setTimeout(() => {
+            status.innerHTML = '<span style="color:#10b981;">✅ UPI ID Verified</span>';
+        }, 1200);
+    }
+
+    function formatCard(input) {
+        let v = input.value.replace(/\D/g, '').substring(0, 16);
+        input.value = v.replace(/(.{4})/g, '$1 ').trim();
+    }
+
+    function formatExpiry(input) {
+        let v = input.value.replace(/\D/g, '').substring(0, 4);
+        if (v.length > 2) v = v.substring(0, 2) + '/' + v.substring(2);
+        input.value = v;
+    }
+
+    function simulatePay(method) {
+        const modal = document.getElementById('paymentModal');
+        if (!modal) return;
+        const totalAmount = document.getElementById('totalAmount').textContent;
+        modal.querySelector('div').innerHTML = `
+            <div style="padding: 3rem 2rem; text-align: center;">
+                <div style="width: 60px; height: 60px; border: 4px solid #3b82f6; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1.5rem;"></div>
+                <h4 style="color: #1f2937; margin-bottom: 0.5rem;">Processing Payment</h4>
+                <p style="color: #6b7280; font-size: 0.9rem;">Please wait while we process your ${method} payment of ${totalAmount}...</p>
+                <p style="color: #9ca3af; font-size: 0.8rem; margin-top: 1rem;">Do not close this window</p>
+            </div>`;
+        setTimeout(() => {
+            closePaymentGateway();
+            completePayment();
+        }, 2000);
+    }
+
+    function completePayment() {
+        closePaymentGateway();
+
+        // Show success message
+        const successModal = document.createElement('div');
+        successModal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;';
+
+        successModal.innerHTML = `
+        <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; text-align: center;">
+            <div style="font-size: 4rem; color: #2E8B57; margin-bottom: 1rem;">✅</div>
+            <h3 style="color: #1a1a2e; margin-bottom: 0.5rem;">Payment Successful!</h3>
+            <p style="color: #6b7280; margin-bottom: 1.5rem;">Your appointment has been booked</p>
+            <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <p style="margin: 0; font-size: 0.9rem; color: #6b7280;">Transaction ID</p>
+                <p style="margin: 0.25rem 0 0 0; font-weight: 700; color: #166534;">TXN${Math.floor(Math.random() * 1000000)}</p>
+            </div>
+            <button onclick="submitFormNow()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #2E8B57, #3CB371); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                <i class="fas fa-calendar-check"></i> View My Appointments
+            </button>
+        </div>
+    `;
+
+        document.body.appendChild(successModal);
+        successModal.id = 'successModal';
+    }
+
+    function submitFormNow() {
+        document.getElementById('successModal').remove();
+        document.getElementById('bookingForm').submit();
+    }
+</script>
+
+<!-- Discount Modal -->
+<div id="discountModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
+    <div
+        style="background: white; width: 90%; max-width: 450px; border-radius: 20px; overflow: hidden; position: relative; animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
+        <button onclick="closeDiscountModal()"
+            style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.1); border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; color: #333;">&times;</button>
+
+        <!-- Ad Banner (CSS Styled) -->
+        <div
+            style="background: linear-gradient(135deg, #166534 0%, #2E8B57 100%); padding: 2rem; text-align: center; color: white; position: relative; overflow: hidden;">
+            <div
+                style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%;">
+            </div>
+            <div
+                style="position: absolute; bottom: -20px; left: -20px; width: 80px; height: 80px; background: rgba(0,0,0,0.1); border-radius: 50%;">
+            </div>
+
+            <h5
+                style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.5rem;">
+                Special Offer</h5>
+            <h2
+                style="font-size: 3.5rem; font-weight: 800; line-height: 1; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+                FLAT<br>₹100<br>OFF</h2>
+            <p style="margin-top: 1rem; font-size: 1.1rem; opacity: 0.9;">On your first consultation</p>
+        </div>
+
+        <div style="padding: 1.5rem; text-align: center;">
+            <p style="color: #666; margin-bottom: 1.5rem;">Book your appointment now and save big! Valid for all
+                consultation types.</p>
+            <button onclick="applyDiscount()"
+                style="width: 100%; padding: 1rem; background: #1a1a2e; color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s;">
+                Apply Coupon & Book
+            </button>
+            <button onclick="closeDiscountModal()"
+                style="background: none; border: none; color: #999; margin-top: 1rem; cursor: pointer;">No,
+                thanks</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes popIn {
+        0% {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+</style>
+
+<script>
+    let discountApplied = false;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Show discount modal after 1.5 seconds
+        setTimeout(() => {
+            const modal = document.getElementById('discountModal');
+            modal.style.display = 'flex';
+        }, 1500);
+    });
+
+    function closeDiscountModal() {
+        document.getElementById('discountModal').style.display = 'none';
+    }
+
+    function applyDiscount() {
+        discountApplied = true;
+        closeDiscountModal();
+
+        // Add hidden input for discount
+        const form = document.getElementById('bookingForm');
+        let input = document.getElementById('discountInput');
+        if (!input) {
+            input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'discount_applied';
+            input.id = 'discountInput';
+            form.appendChild(input);
+        }
+        input.value = 'true';
+
+        // Show success toast
+        const toast = document.createElement('div');
+        toast.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 1rem 2rem; border-radius: 50px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); z-index: 10001; animation: slideUp 0.3s ease;';
+        toast.innerHTML = '<i class="fas fa-check-circle"></i> Coupon Applied! ₹100 Off';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+
+        updateFee();
+    }
+
+    function updateFee() {
+        const consultationType = document.querySelector('input[name="consultation_type"]:checked');
+        const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+
+        if (!consultationType) return;
+
+        const fees = {
+            'video': 500,
+            'clinic': 800,
+            'home': 1500
+        };
+
+        let baseFee = fees[consultationType.value];
+        const platformFee = 50;
+        let total = 0;
+        let gst = 0;
+
+        // Check for Health Plan
+        if (paymentMethod && paymentMethod.value === 'Health Plan') {
+            document.getElementById('consultationFee').innerHTML = `<span style="text-decoration: line-through; color: #999;">₹${baseFee}</span> <span class="text-success fw-bold">FREE</span>`;
+            document.getElementById('gstAmount').textContent = '₹0';
+            document.getElementById('totalAmount').textContent = '₹0';
+            // Hide standard discount logic if Plan is used
+            return;
+        }
+
+        // Apply discount
+        let discountAmount = 0;
+        if (discountApplied) {
+            discountAmount = 100;
+            // Visual indicator
+            document.getElementById('consultationFee').innerHTML = `<span style="text-decoration: line-through; color: #999; font-size: 0.9em;">₹${baseFee}</span> <span style="color: #10b981;">₹${baseFee - 100}</span>`;
+        } else {
+            document.getElementById('consultationFee').textContent = '₹' + baseFee;
+        }
+
+        const taxableAmount = (baseFee - discountAmount) + platformFee;
+        gst = Math.round(taxableAmount * 0.18);
+        total = taxableAmount + gst;
+
+        document.getElementById('gstAmount').textContent = '₹' + gst;
+        document.getElementById('totalAmount').textContent = '₹' + total;
+    }
+</script>
+{% endblock %}

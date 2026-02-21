@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - Google Accounts</title>
+    <style>
+        body {
+            font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+        }
+    </style>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 450px;
+            padding: 48px 40px 36px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 75px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin: 0 0 10px;
+            color: #202124;
+        }
+
+        p {
+            font-size: 16px;
+            color: #202124;
+            margin: 0 0 30px;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 15px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus {
+            border: 2px solid #1a73e8;
+            padding: 12px 14px;
+            /* Adjust for border width change */
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        a {
+            color: #1a73e8;
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2b7de9;
+            box-shadow: 0 1px 2px 0 rgba(66, 133, 244, 0.3), 0 1px 3px 1px rgba(66, 133, 244, 0.15);
+        }
+
+        .step-2 {
+            display: none;
+        }
+
+        .user-chip {
+            border: 1px solid #dadce0;
+            border-radius: 20px;
+            padding: 5px 15px 5px 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .user-chip i {
+            color: #5f6368;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" class="logo">
+        <h1>Sign in</h1>
+        <p>to continue to MediScan</p>
+
+        <form method="POST" action="{{ url_for('google_login') }}" id="loginForm">
+            <!-- Step 1: Email -->
+            <div id="step1">
+                <div class="input-group">
+                    <input type="email" name="email" id="emailInput" placeholder="Email or phone" required>
+                </div>
+                <!-- <a href="#">Forgot email?</a> -->
+                <div class="actions">
+                    <a href="{{ url_for('auth') }}">Create account</a>
+                    <button type="button" onclick="showStep2()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Password -->
+            <div id="step2" class="step-2">
+                <div class="user-chip" onclick="showStep1()">
+                    <i class="fas fa-user-circle" style="font-size: 24px;"></i>
+                    <span id="userEmailDisplay"></span>
+                    <i class="fas fa-chevron-down" style="font-size: 12px; margin-left: 5px;"></i>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Enter OTP" required>
+                </div>
+                <div class="actions">
+                    <button type="button" id="resendOtpBtn" onclick="resendOtp()"
+                        style="background: none; border: none; color: #1a73e8; padding: 0; cursor: pointer; font-size: 14px; font-weight: 500;"
+                        disabled>
+                        Resend OTP (10s)
+                    </button>
+                    <button type="submit">Next</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/font-awesome/all.min.css') }}">
+
+    <script>
+        let currentEmail = '';
+
+        async function showStep2() {
+            const emailInput = document.getElementById('emailInput');
+            const email = emailInput.value;
+
+            if (!email) {
+                alert('Please enter an email address');
+                return;
+            }
+
+            // Basic email validation
+            if (!email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            const nextBtn = document.querySelector('#step1 button');
+            const originalText = nextBtn.textContent;
+            nextBtn.textContent = 'Sending...';
+            nextBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        create_if_missing: true
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show Realtime OTP
+                    const otpMatch = data.message.match(/Code: (\d+)/);
+                    if (otpMatch) {
+                        alert(`GOOGLE SIMULATION: Your OTP is ${otpMatch[1]}`);
+                    } else {
+                        alert(data.message);
+                    }
+
+                    currentEmail = email;
+                    document.getElementById('userEmailDisplay').textContent = email;
+                    document.getElementById('step1').style.display = 'none';
+                    document.getElementById('step2').style.display = 'block';
+                    startResendTimer(); // Start timer when showing OTP screen
+                } else {
+                    alert(data.message || 'Failed to send OTP');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            } finally {
+                nextBtn.textContent = originalText;
+                nextBtn.disabled = false;
+            }
+        }
+
+        function showStep1() {
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+        }
+
+        // Verify OTP and Login
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const otpInput = document.querySelector('input[name="password"]'); // Using password field for OTP
+            const otp = otpInput.value;
+            const submitBtn = document.querySelector('#step2 button');
+
+            if (!otp) {
+                alert('Please enter the OTP');
+                return;
+            }
+
+            submitBtn.textContent = 'Verifying...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: currentEmail,
+                        otp: otp
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    window.location.href = data.redirect || '/dashboard';
+                } else {
+                    alert(data.message || 'Invalid OTP');
+                    submitBtn.textContent = 'Next';
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Verification failed. Please try again.');
+                submitBtn.textContent = 'Next';
+                submitBtn.disabled = false;
+            }
+        });
+
+        let resendTimer = null;
+        let timeLeft = 10;
+
+        function startResendTimer() {
+            const btn = document.getElementById('resendOtpBtn');
+            timeLeft = 10;
+            btn.disabled = true;
+            btn.style.color = '#80868b'; // Disabled color
+            btn.textContent = `Resend OTP (${timeLeft}s)`;
+
+            if (resendTimer) clearInterval(resendTimer);
+
+            resendTimer = setInterval(() => {
+                timeLeft--;
+                btn.textContent = `Resend OTP (${timeLeft}s)`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(resendTimer);
+                    btn.disabled = false;
+                    btn.style.color = '#1a73e8'; // Active color
+                    btn.textContent = 'Resend OTP';
+                }
+            }, 1000);
+        }
+
+        async function resendOtp() {
+            if (!currentEmail) return;
+
+            const btn = document.getElementById('resendOtpBtn');
+            btn.textContent = 'Sending...';
+
+            try {
+                const response = await fetch('/api/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: currentEmail,
+                        create_if_missing: false
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const otpMatch = data.message.match(/Code: (\d+)/);
+                    if (otpMatch) {
+                        alert(`GOOGLE SIMULATION: Your New OTP is ${otpMatch[1]}`);
+                    } else {
+                        alert(data.message);
+                    }
+                    startResendTimer(); // Restart timer on success
+                } else {
+                    alert(data.message || 'Failed to resend OTP');
+                    btn.textContent = 'Resend OTP'; // Reset text
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to resend OTP.');
+                btn.textContent = 'Resend OTP';
+            }
+        }
+
+        // Allow "Enter" key to trigger Next in Step 1
+        document.getElementById('emailInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                showStep2();
+            }
+        });
+    </script>
+</body>
+
+</html>

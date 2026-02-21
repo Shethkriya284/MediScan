@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="max-width: 400px; margin-top: 4rem;">
+    <div class="card">
+        <div class="text-center mb-4">
+            <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="MediScan Logo"
+                style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+        </div>
+        <h2 class="text-center mb-4">Verify OTP</h2>
+        <p class="text-center text-secondary">Enter the OTP sent to your registered contact.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div style="padding: 1rem; margin-bottom: 1rem; border-radius: 0.5rem; background: #fee2e2; color: #b91c1c;">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('old_login') }}">
+            <!-- Hidden field to pass back the user identifier -->
+            <input type="hidden" name="email_or_phone" value="{{ email_or_phone }}">
+
+            <div class="form-group">
+                <label for="otp" class="form-label">One Time Password</label>
+                <input type="text" name="otp" id="otp" class="form-control" required placeholder="Enter 6-digit OTP"
+                    style="text-align: center; letter-spacing: 0.5rem; font-size: 1.2rem;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Verify & Login</button>
+        </form>
+        <p class="text-center mt-4"><a href="{{ url_for('auth') }}" style="color: var(--primary-color);">Back to
+                Login</a></p>
+    </div>
+</div>
+{% endblock %}

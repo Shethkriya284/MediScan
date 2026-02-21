@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- Hero Section -->
+    <div
+        style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); padding: 3rem 1rem; text-align: center; margin-bottom: 0;">
+        <div class="container">
+            <h1 style="color: #166534; font-weight: 800; font-size: 3.5rem; margin-bottom: 1rem;">Who We Are</h1>
+            <p class="lead" style="color: #4b5563; max-width: 800px; margin: 0 auto; font-size: 1.25rem;">
+                MediScan is revolutionizing healthcare access through Artificial Intelligence, making quality medical
+                guidance accessible to everyone, everywhere.
+            </p>
+        </div>
+    </div>
+
+
+
+    <!-- What is MediScan & Process Section -->
+    <div style="padding: 3rem 0; background: #fff;">
+        <div class="container">
+            <div class="row align-items-center mb-5">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">Realtime
+                        Health Intelligence</span>
+                    <h2 class="mb-3" style="font-weight: 800; color: #1a1a2e; font-size: 2.5rem;">What is MediScan?</h2>
+                    <p class="lead text-muted mb-4">
+                        MediScan is your intelligent healthcare companion. By leveraging advanced AI, we provide
+                        <strong style="color: #10b981;">realtime analysis</strong> of medical reports, symptoms, and
+                        health data.
+                    </p>
+                    <p class="text-muted mb-4">
+                        No more waiting for days to understand a complex lab report or getting anxious about symptoms.
+                        MediScan translates medical jargon into clear, actionable insights in seconds, bridging the gap
+                        between patient confusion and doctor consultation.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span class="fw-medium">Instant Analysis</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span class="fw-medium">24/7 Availability</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <!-- Process Steps (User Journey) -->
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="d-flex p-3 rounded-4 bg-light align-items-center hover-lift">
+                                <div class="icon-box bg-white shadow-sm text-primary rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                    style="width: 60px; height: 60px; flex-shrink: 0;">
+                                    <i class="fas fa-file-medical-alt fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-1">1. Scan & Detect</h5>
+                                    <p class="mb-0 text-muted small">Upload your lab report or simply enter your
+                                        symptoms.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex p-3 rounded-4 bg-light align-items-center hover-lift"
+                                style="margin-left: 20px;">
+                                <div class="icon-box bg-white shadow-sm text-warning rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                    style="width: 60px; height: 60px; flex-shrink: 0;">
+                                    <i class="fas fa-microchip fa-lg"></i>
+                                    <span class="pulsing-ring"></span>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-1">2. AI Analysis</h5>
+                                    <p class="mb-0 text-muted small">Our advanced AI processes data in milliseconds to
+                                        identify patterns.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex p-3 rounded-4 bg-light align-items-center hover-lift"
+                                style="margin-left: 40px;">
+                                <div class="icon-box bg-white shadow-sm text-success rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                    style="width: 60px; height: 60px; flex-shrink: 0;">
+                                    <i class="fas fa-clipboard-check fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-1">3. Actionable Insights</h5>
+                                    <p class="mb-0 text-muted small">Get immediate health recommendations and doctor
+                                        connections.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Stories (Testimonials) -->
+    <div style="background: #f8fafc; padding: 3rem 0;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span
+                    class="badge bg-warning bg-opacity-10 text-warning mb-2 px-3 py-2 rounded-pill">Testimonials</span>
+                <h2 style="font-weight: 700; color: #1a1a2e;">Stories of Better Health</h2>
+                <p class="text-muted">Hear from people who transformed their healthcare journey</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Testimonial 1 -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 testimonial-card">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="text-muted mb-4 fst-italic">"MediScan saved me hours of anxiety. I uploaded my blood
+                            report and within seconds, I understood exactly what the abnormal values meant before even
+                            seeing my doctor."</p>
+                        <div class="d-flex align-items-center mt-auto">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3"
+                                style="width: 45px; height: 45px;">RK</div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Rahul Kumar</h6>
+                                <small class="text-muted">Mumbai, India</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Testimonial 2 -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 testimonial-card">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="text-muted mb-4 fst-italic">"The realtime medicine stock alerts are a lifesaver for
+                            tracking my mother's prescriptions. The app feels so alive and responsive!"</p>
+                        <div class="d-flex align-items-center mt-auto">
+                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3"
+                                style="width: 45px; height: 45px;">SP</div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Sneha Patel</h6>
+                                <small class="text-muted">Ahmedabad, India</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Testimonial 3 -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 testimonial-card">
+                        <div class="mb-3 text-warning">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="text-muted mb-4 fst-italic">"Finding a specialist was always a hassle until I used
+                            MediScan. The detailed doctor profiles and instant booking analysis are top-notch."</p>
+                        <div class="d-flex align-items-center mt-auto">
+                            <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3"
+                                style="width: 45px; height: 45px;">AM</div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Amit Mishra</h6>
+                                <small class="text-muted">Delhi, India</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mission & Vision -->
+    <div class="container" style="padding: 3rem 1rem;">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <span class="badge bg-success bg-opacity-10 text-success mb-2 px-3 py-2 rounded-pill">Our Purpose</span>
+                <h2 class="mb-4" style="color: #1a1a2e; font-weight: 700;">Driving the Future of Healthcare</h2>
+
+                <div class="mb-4">
+                    <h4 style="color: #059669; font-weight: 600;">Our Mission</h4>
+                    <p class="text-muted">To empower individuals with immediate, accurate, and personalized healthcare
+                        insights using cutting-edge AI technology. We believe in making health data actionable.</p>
+                </div>
+
+                <div>
+                    <h4 style="color: #059669; font-weight: 600;">Our Vision</h4>
+                    <p class="text-muted">A world where quality healthcare is a fundamental right, not a privilege. We
+                        envision a future where technology bridges the gap between patients and medical professionals,
+                        ensuring no one is left behind.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Values -->
+    <div style="background: #f9fafb; padding: 3rem 2rem;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 style="font-weight: 700; color: #1a1a2e;">Our Core Values</h2>
+                <p class="text-muted">The principles that guide every decision we make</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 text-center hover-card"
+                        style="transition: transform 0.3s;">
+                        <div class="mb-4 mx-auto d-flex align-items-center justify-content-center"
+                            style="width: 80px; height: 80px; background: #dcfce7; border-radius: 50%; color: #166534; font-size: 2rem;">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h4 style="font-weight: 600;">Care First</h4>
+                        <p class="text-muted">We prioritize patient well-being in every decision we make and every
+                            feature we build.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 text-center hover-card"
+                        style="transition: transform 0.3s;">
+                        <div class="mb-4 mx-auto d-flex align-items-center justify-content-center"
+                            style="width: 80px; height: 80px; background: #dbeafe; border-radius: 50%; color: #1e40af; font-size: 2rem;">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4 style="font-weight: 600;">Trust & Privacy</h4>
+                        <p class="text-muted">We adhere to the strictest standards of data security and medical ethics
+                            to keep your information safe.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm p-4 text-center hover-card"
+                        style="transition: transform 0.3s;">
+                        <div class="mb-4 mx-auto d-flex align-items-center justify-content-center"
+                            style="width: 80px; height: 80px; background: #fef3c7; border-radius: 50%; color: #92400e; font-size: 2rem;">
+                            <i class="fas fa-microchip"></i>
+                        </div>
+                        <h4 style="font-weight: 600;">Innovation</h4>
+                        <p class="text-muted">We constantly push the boundaries of what's possible in health-tech to
+                            serve you better.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="container" style="padding: 3rem 1rem;">
+        <div class="text-center mb-5">
+            <h2 style="font-weight: 700; color: #1a1a2e;">Meet Our Team</h2>
+            <p class="text-muted">The brilliant minds behind MediScan</p>
+        </div>
+        <div class="row justify-content-center g-4">
+            <!-- Team Member 1 -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 text-center p-4 hover-card" style="transition: all 0.3s;">
+                    <div class="mb-3 mx-auto" style="width: 120px; height: 120px; position: relative;">
+                        <img src="{{ url_for('static', filename='images/kriya_ai.png') }}" alt="Kriya Sheth"
+                            class="rounded-circle shadow"
+                            style="width: 100%; height: 100%; object-fit: cover; border: 4px solid white;">
+                    </div>
+                    <h5 style="font-weight: 700; margin-bottom: 0.25rem;">Kriya Sheth</h5>
+                    <p class="text-primary fw-medium mb-3">Team Lead Engineer</p>
+                    <p class="text-muted small">Passionate about AI and healthcare innovation. Leading the vision for
+                        MediScan.</p>
+                </div>
+            </div>
+            <!-- Team Member 2 -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 text-center p-4 hover-card" style="transition: all 0.3s;">
+                    <div class="mb-3 mx-auto" style="width: 120px; height: 120px; position: relative;">
+                        <img src="{{ url_for('static', filename='images/arya.jpeg') }}" alt="Arya Shah"
+                            class="rounded-circle shadow"
+                            style="width: 100%; height: 100%; object-fit: cover; border: 4px solid white;">
+                    </div>
+                    <h5 style="font-weight: 700; margin-bottom: 0.25rem;">Arya Shah</h5>
+                    <p class="text-primary fw-medium mb-3">Lead Engineer</p>
+                    <p class="text-muted small">Expert in backend architecture and scalable systems.</p>
+                </div>
+            </div>
+            <!-- Team Member 3 -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 text-center p-4 hover-card" style="transition: all 0.3s;">
+                    <div class="mb-3 mx-auto" style="width: 120px; height: 120px; position: relative;">
+                        <img src="{{ url_for('static', filename='images/megh.png') }}" alt="Megh Shah"
+                            class="rounded-circle shadow"
+                            style="width: 100%; height: 100%; object-fit: cover; border: 4px solid white;">
+                    </div>
+                    <h5 style="font-weight: 700; margin-bottom: 0.25rem;">Megh Shah</h5>
+                    <p class="text-primary fw-medium mb-3">Lead Engineer</p>
+                    <p class="text-muted small">Specializing in frontend experience and user interface design.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Stats Section (Moved to Bottom) -->
+<div class="container mb-5" style="margin-top: 2rem;">
+    <div class="card border-0 shadow-lg"
+        style="border-radius: 20px; overflow: hidden; background: linear-gradient(to right, #ffffff, #f0fdf4);">
+        <div class="card-body p-5">
+            <div class="text-center mb-5">
+                <h2 style="font-weight: 700; color: #1a1a2e;">Why Choose Us?</h2>
+                <p class="text-muted">Trusted by thousands for accurate health insights</p>
+            </div>
+            <div class="row text-center g-4">
+                <!-- Stat 1 -->
+                <div class="col-md-3 col-6 border-end-md">
+                    <div class="p-3">
+                        <i class="fas fa-users mb-3" style="font-size: 2.5rem; color: #10b981;"></i>
+                        <h2 style="font-weight: 800; color: #1a1a2e; margin-bottom: 0.5rem;">{{ users_count }}+</h2>
+                        <p class="text-muted fw-medium mb-0">Registered Users</p>
+                    </div>
+                </div>
+                <!-- Stat 2 -->
+                <div class="col-md-3 col-6 border-end-md">
+                    <div class="p-3">
+                        <i class="fas fa-smile mb-3" style="font-size: 2.5rem; color: #3b82f6;"></i>
+                        <h2 style="font-weight: 800; color: #1a1a2e; margin-bottom: 0.5rem;">{{ patients_count }}+</h2>
+                        <p class="text-muted fw-medium mb-0">Happy Patients</p>
+                    </div>
+                </div>
+                <!-- Stat 3 -->
+                <div class="col-md-3 col-6 border-end-md">
+                    <div class="p-3">
+                        <i class="fas fa-hospital mb-3" style="font-size: 2.5rem; color: #f59e0b;"></i>
+                        <h2 style="font-weight: 800; color: #1a1a2e; margin-bottom: 0.5rem;">{{ hospitals_count }}+</h2>
+                        <p class="text-muted fw-medium mb-0">Partner Hospitals</p>
+                    </div>
+                </div>
+                <!-- Stat 4 -->
+                <div class="col-md-3 col-6">
+                    <div class="p-3">
+                        <i class="fas fa-user-md mb-3" style="font-size: 2.5rem; color: #ef4444;"></i>
+                        <h2 style="font-weight: 800; color: #1a1a2e; margin-bottom: 0.5rem;">{{ doctors_count }}+</h2>
+                        <p class="text-muted fw-medium mb-0">Expert Doctors</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<style>
+    @media (min-width: 768px) {
+        .border-end-md {
+            border-right: 1px solid #e5e7eb;
+        }
+    }
+
+    .hover-card:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .pulsing-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background-color: #10b981;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        }
+    }
+
+    .testimonial-card {
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+    }
+</style>
+{% endblock %}

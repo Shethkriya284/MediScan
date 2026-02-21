@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="padding: 2rem 1rem;">
+    <div style="margin-bottom: 2rem;">
+        <h2 style="font-size: 2rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.5rem;">
+            <i class="fas fa-chart-bar"></i> Advanced Health Analytics
+        </h2>
+        <p style="color: #6b7280;">AI-powered insights using NumPy statistical analysis</p>
+    </div>
+
+    {% if analytics %}
+    <!-- Overall Health Score -->
+    <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 16px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);">
+        <div style="text-align: center;">
+            <h3 style="margin: 0; font-size: 1.2rem; opacity: 0.9;">AI Health Score</h3>
+            <div style="font-size: 4rem; font-weight: 800; margin: 1rem 0;">{{ analytics.overall_score }}%</div>
+            <p style="margin: 0; opacity: 0.9;">
+                {% if analytics.overall_score >= 80 %}Excellent Health Profile
+                {% elif analytics.overall_score >= 60 %}Good Health Trends
+                {% else %}Needs Attention{% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Analytics Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+        
+        {% if analytics.heart_rate %}
+        <!-- Heart Rate Analytics -->
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 1.5rem; color: #dc2626;">
+                <i class="fas fa-heartbeat"></i> Heart Rate Analysis
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                <div style="text-align: center; padding: 1rem; background: #fee2e2; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #dc2626;">{{ "%.1f"|format(analytics.heart_rate.mean) }}</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Average BPM</div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: #fef3c7; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #d97706;">{{ "%.1f"|format(analytics.heart_rate.std) }}</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Variability</div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: #dcfce7; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #16a34a;">{{ analytics.heart_rate.min }}</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Min BPM</div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: #dbeafe; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #2563eb;">{{ analytics.heart_rate.max }}</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Max BPM</div>
+                </div>
+            </div>
+            <div style="margin-top: 1rem; padding: 1rem; background: #f0fdf4; border-radius: 8px; border-left: 3px solid #16a34a;">
+                <p style="margin: 0; font-size: 0.9rem; color: #15803d;">
+                    <i class="fas fa-info-circle"></i> <strong>Trend:</strong> Your heart rate is {{ analytics.heart_rate.trend }}
+                </p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if analytics.weight %}
+        <!-- Weight Analytics -->
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 1.5rem; color: #d97706;">
+                <i class="fas fa-weight"></i> Weight Analysis
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                <div style="text-align: center; padding: 1rem; background: #fef3c7; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #d97706;">{{ "%.1f"|format(analytics.weight.mean) }} kg</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Average Weight</div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: #e0e7ff; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #3730a3;">{{ analytics.weight.bmi_category }}</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">BMI Category</div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: {% if analytics.weight.change > 0 %}#dcfce7{% else %}#fee2e2{% endif %}; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: {% if analytics.weight.change > 0 %}#16a34a{% else %}#dc2626{% endif %};">
+                        {{ "%.1f"|format(analytics.weight.change|abs) }} kg
+                    </div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">
+                        {% if analytics.weight.change > 0 %}Weight Loss{% else %}Weight Gain{% endif %}
+                    </div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: #f3f4f6; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #374151;">{{ "%.1f"|format(analytics.weight.std) }}</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Fluctuation</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if analytics.sleep %}
+        <!-- Sleep Analytics -->
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 1.5rem; color: #6366f1;">
+                <i class="fas fa-bed"></i> Sleep Analysis
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                <div style="text-align: center; padding: 1rem; background: #e0e7ff; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #6366f1;">{{ "%.1f"|format(analytics.sleep.mean) }}h</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Average Sleep</div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: #dcfce7; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #16a34a;">{{ "%.0f"|format(analytics.sleep.quality_score) }}%</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Quality Score</div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: #fef3c7; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #d97706;">{{ "%.0f"|format(analytics.sleep.consistency) }}%</div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Consistency</div>
+                </div>
+                <div style="text-align: center; padding: 1rem; background: #f0fdf4; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #16a34a;">
+                        {% if analytics.sleep.mean >= 7 %}Optimal{% else %}Needs Improvement{% endif %}
+                    </div>
+                    <div style="font-size: 0.9rem; color: #6b7280;">Status</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- AI Recommendations -->
+    <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-top: 2rem;">
+        <h3 style="margin-bottom: 1.5rem;">
+            <i class="fas fa-robot"></i> AI Health Recommendations
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+            {% if analytics.heart_rate and analytics.heart_rate.mean > 100 %}
+            <div style="padding: 1rem; background: #fee2e2; border-radius: 8px; border-left: 3px solid #dc2626;">
+                <strong>Heart Rate:</strong> Consider stress management techniques and consult a cardiologist.
+            </div>
+            {% endif %}
+            
+            {% if analytics.sleep and analytics.sleep.mean < 7 %}
+            <div style="padding: 1rem; background: #fef3c7; border-radius: 8px; border-left: 3px solid #d97706;">
+                <strong>Sleep:</strong> Aim for 7-9 hours of sleep. Consider a consistent bedtime routine.
+            </div>
+            {% endif %}
+            
+            {% if analytics.weight and analytics.weight.bmi_category != 'Normal' %}
+            <div style="padding: 1rem; background: #e0e7ff; border-radius: 8px; border-left: 3px solid #6366f1;">
+                <strong>Weight:</strong> Consult a nutritionist for personalized diet and exercise plans.
+            </div>
+            {% endif %}
+            
+            <div style="padding: 1rem; background: #dcfce7; border-radius: 8px; border-left: 3px solid #16a34a;">
+                <strong>General:</strong> Keep tracking your metrics daily for better health insights!
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- No Data State -->
+    <div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <i class="fas fa-chart-bar" style="font-size: 4rem; color: #d1d5db; margin-bottom: 1rem;"></i>
+        <h3 style="color: #6b7280; margin-bottom: 1rem;">No Health Data Available</h3>
+        <p style="color: #9ca3af; margin-bottom: 2rem;">Start tracking your health metrics to see advanced analytics</p>
+        <a href="{{ url_for('health_tracker') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Health Metrics
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

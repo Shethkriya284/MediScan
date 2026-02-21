@@ -1,0 +1,1130 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" style="padding: 2rem 1rem;">
+    <!-- Admin Header -->
+    <div style="margin-bottom: 2rem;">
+        <h2 style="font-size: 2rem; font-weight: 700; color: #1a1a2e; margin-bottom: 0.5rem;">
+            <i class="fas fa-user-shield"></i> Admin Dashboard
+        </h2>
+        <p style="color: #6b7280;">Manage MediScan platform and users</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <a href="{{ url_for('admin_view_users') }}" style="text-decoration: none; color: inherit;">
+            <div
+                style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div
+                        style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 2rem; font-weight: 700;">{{ stats.total_users }}</h3>
+                        <p style="margin: 0; opacity: 0.9;">Total Users</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ url_for('admin_manage_doctors') }}" style="text-decoration: none; color: inherit;">
+            <div
+                style="background: linear-gradient(135deg, #2E8B57, #3CB371); color: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(46, 139, 87, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div
+                        style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 2rem; font-weight: 700;">{{ stats.total_doctors }}</h3>
+                        <p style="margin: 0; opacity: 0.9;">Doctors</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ url_for('admin_view_patients') }}" style="text-decoration: none; color: inherit;">
+            <div
+                style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(240, 147, 251, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div
+                        style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        <i class="fas fa-user-injured"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 2rem; font-weight: 700;">{{ stats.total_patients }}</h3>
+                        <p style="margin: 0; opacity: 0.9;">Patients</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ url_for('admin_view_appointments') }}" style="text-decoration: none; color: inherit;">
+            <div
+                style="background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(79, 172, 254, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div
+                        style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 2rem; font-weight: 700;">{{ stats.total_appointments }}</h3>
+                        <p style="margin: 0; opacity: 0.9;">Appointments</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Quick Actions -->
+    <div
+        style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fas fa-bolt"></i> Quick Actions
+        </h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button onclick="openAddDoctorModal()" class="btn btn-primary" style="border: none;">
+                <i class="fas fa-plus"></i> Add Doctor
+            </button>
+            <button onclick="openAddOfferModal()" class="btn btn-success" style="border: none;">
+                <i class="fas fa-tag"></i> Add New Offer
+            </button>
+            <a href="{{ url_for('admin_manage_doctors') }}" class="btn btn-outline-primary">
+                <i class="fas fa-users-cog"></i> Manage Doctors
+            </a>
+            <button class="btn btn-outline-secondary" onclick="exportData()">
+                <i class="fas fa-download"></i> Export Data
+            </button>
+            <button class="btn btn-outline-info" onclick="viewSystemLogs()">
+                <i class="fas fa-list"></i> System Logs
+            </button>
+        </div>
+    </div>
+
+    <!-- Add Offer Modal -->
+    <div id="addOfferModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div
+            style="background: white; width: 90%; max-width: 600px; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: fadeInUp 0.3s ease; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; color: #1a1a2e;"><i class="fas fa-tag"></i> Create New Offer</h3>
+                <button onclick="closeAddOfferModal()"
+                    style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+            </div>
+
+            <form action="{{ url_for('admin_add_offer') }}" method="POST">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Offer Title</label>
+                    <input type="text" name="title" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;"
+                        placeholder="e.g., Summer Health Checkup">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Description</label>
+                    <input type="text" name="description" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;"
+                        placeholder="e.g., Includes Full Body Profile">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Discounted Price
+                            (₹)</label>
+                        <input type="text" name="price" required
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;"
+                            placeholder="999">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Original Price (₹)</label>
+                        <input type="text" name="original_price" required
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;"
+                            placeholder="2999">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Discount Label</label>
+                        <input type="text" name="discount_label" required
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;"
+                            placeholder="67% OFF">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Expiry Date & Time</label>
+                        <input type="datetime-local" name="expiry_date" required
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Card Color Theme</label>
+                    <select name="background_gradient" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                        <option value="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">Purple/Blue (Default)</option>
+                        <option value="linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)">Pink/Soft Red
+                        </option>
+                        <option value="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">Cyan/Blue</option>
+                        <option value="linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)">Green/Mint</option>
+                        <option value="linear-gradient(135deg, #fa709a 0%, #fee140 100%)">Yellow/Orange</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                    <button type="button" onclick="closeAddOfferModal()"
+                        style="padding: 0.75rem 1.5rem; border: 1px solid #d1d5db; background: white; border-radius: 6px; cursor: pointer;">Cancel</button>
+                    <button type="submit"
+                        style="padding: 0.75rem 1.5rem; background: #2E8B57; color: white; border: none; border-radius: 6px; cursor: pointer;">Create
+                        Offer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Analytics Charts Section -->
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+        <!-- User Growth Chart -->
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 1.5rem; font-weight: 600;">
+                <i class="fas fa-chart-line"></i> User Growth (Last 12 Months)
+            </h3>
+            <canvas id="userGrowthChart" width="400" height="200"></canvas>
+        </div>
+
+        <!-- Revenue Analytics Chart -->
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 1.5rem; font-weight: 600;">
+                <i class="fas fa-chart-area"></i> Revenue Analytics (₹)
+            </h3>
+            <canvas id="revenueChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- More Analytics -->
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+        <!-- Geographic Distribution -->
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 1.5rem; font-weight: 600;">
+                <i class="fas fa-map-marked-alt"></i> Geographic Distribution
+            </h3>
+            <canvas id="geographicChart" width="400" height="300"></canvas>
+        </div>
+
+        <!-- Feature Usage -->
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h3 style="margin-bottom: 1.5rem; font-weight: 600;">
+                <i class="fas fa-chart-bar"></i> Feature Usage Analytics
+            </h3>
+            <canvas id="featureUsageChart" width="400" height="300"></canvas>
+        </div>
+    </div>
+
+    <!-- System Health Metrics -->
+    <div
+        style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fas fa-server"></i> System Health Metrics
+            <span style="float: right; font-size: 0.8rem; color: #6b7280;">
+                <i class="fas fa-circle" style="color: #22c55e; animation: pulse 2s infinite;"></i> Live
+            </span>
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div
+                style="text-align: center; padding: 1.5rem; background: #f0f9ff; border-radius: 8px; border: 2px solid #0ea5e9;">
+                <div style="font-size: 2rem; font-weight: 700; color: #0ea5e9; margin-bottom: 0.5rem;">{{
+                    system_health.server_uptime }}</div>
+                <div style="color: #6b7280; font-weight: 600;">Server Uptime</div>
+            </div>
+            <div
+                style="text-align: center; padding: 1.5rem; background: #f0fdf4; border-radius: 8px; border: 2px solid #22c55e;">
+                <div style="font-size: 2rem; font-weight: 700; color: #22c55e; margin-bottom: 0.5rem;">{{
+                    system_health.response_time }}</div>
+                <div style="color: #6b7280; font-weight: 600;">Avg Response Time</div>
+            </div>
+            <div
+                style="text-align: center; padding: 1.5rem; background: #fefce8; border-radius: 8px; border: 2px solid #eab308;">
+                <div style="font-size: 2rem; font-weight: 700; color: #eab308; margin-bottom: 0.5rem;">{{
+                    system_health.active_sessions }}</div>
+                <div style="color: #6b7280; font-weight: 600;">Active Sessions</div>
+            </div>
+            <div
+                style="text-align: center; padding: 1.5rem; background: #fdf2f8; border-radius: 8px; border: 2px solid #ec4899;">
+                <div style="font-size: 2rem; font-weight: 700; color: #ec4899; margin-bottom: 0.5rem;">{{
+                    system_health.database_size }}</div>
+                <div style="color: #6b7280; font-weight: 600;">Database Size</div>
+            </div>
+            <div
+                style="text-align: center; padding: 1.5rem; background: #f3e8ff; border-radius: 8px; border: 2px solid #a855f7;">
+                <div style="font-size: 2rem; font-weight: 700; color: #a855f7; margin-bottom: 0.5rem;">{{
+                    "{:,}".format(system_health.daily_api_calls) }}</div>
+                <div style="color: #6b7280; font-weight: 600;">Daily API Calls</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Insights -->
+    <div
+        style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fas fa-chart-pie"></i> Performance Insights
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <!-- Completion Rate Gauge -->
+            <div style="text-align: center;">
+                <h4 style="margin-bottom: 1rem; color: #374151;">Appointment Completion Rate</h4>
+                <div style="position: relative; width: 200px; height: 200px; margin: 0 auto;">
+                    <canvas id="completionGauge" width="200" height="200"></canvas>
+                    <div
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #059669;">{{ stats.completion_rate }}%
+                        </div>
+                        <div style="font-size: 0.8rem; color: #6b7280;">Completion</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Growth Rate -->
+            <div style="text-align: center;">
+                <h4 style="margin-bottom: 1rem; color: #374151;">Monthly Growth Rate</h4>
+                <div style="position: relative; width: 200px; height: 200px; margin: 0 auto;">
+                    <canvas id="growthGauge" width="200" height="200"></canvas>
+                    <div
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #0ea5e9;">{{ stats.growth_rate }}%</div>
+                        <div style="font-size: 0.8rem; color: #6b7280;">Growth</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Retention -->
+            <div style="text-align: center;">
+                <h4 style="margin-bottom: 1rem; color: #374151;">User Retention Rate</h4>
+                <div style="position: relative; width: 200px; height: 200px; margin: 0 auto;">
+                    <canvas id="retentionGauge" width="200" height="200"></canvas>
+                    <div
+                        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                        <div style="font-size: 2rem; font-weight: 700; color: #7c3aed;">{{ stats.user_retention }}%
+                        </div>
+                        <div style="font-size: 0.8rem; color: #6b7280;">Retention</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Active Offers Section -->
+<div
+    style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+    <h3 style="margin-bottom: 1.5rem; font-weight: 600;">
+        <i class="fas fa-tags"></i> Active Offers
+    </h3>
+
+    {% if offers %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="text-align: left; border-bottom: 2px solid #f3f4f6;">
+                    <th style="padding: 1rem; color: #6b7280;">Title</th>
+                    <th style="padding: 1rem; color: #6b7280;">Price</th>
+                    <th style="padding: 1rem; color: #6b7280;">Expiry</th>
+                    <th style="padding: 1rem; color: #6b7280;">Status</th>
+                    <th style="padding: 1rem; color: #6b7280;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for offer in offers %}
+                <tr style="border-bottom: 1px solid #f3f4f6;">
+                    <td style="padding: 1rem; font-weight: 600;">{{ offer.title }}</td>
+                    <td style="padding: 1rem;">
+                        <span style="text-decoration: line-through; color: #9ca3af; margin-right: 0.5rem;">₹{{
+                            offer.original_price }}</span>
+                        <span style="color: #059669; font-weight: 700;">₹{{ offer.price }}</span>
+                    </td>
+                    <td style="padding: 1rem;">
+                        {% if offer.expiry_date %}
+                        {{ offer.expiry_date.strftime('%Y-%m-%d %H:%M') }}
+                        {% else %}
+                        N/A
+                        {% endif %}
+                    </td>
+                    <td style="padding: 1rem;">
+                        <span
+                            style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">Active</span>
+                    </td>
+                    <td style="padding: 1rem;">
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button
+                                onclick="openEditOfferModal('{{ offer.id }}', '{{ offer.title }}', '{{ offer.description }}', '{{ offer.price }}', '{{ offer.original_price }}', '{{ offer.discount_label }}', '{{ offer.background_gradient }}', '{{ offer.expiry_date.strftime('%Y-%m-%dT%H:%M') if offer.expiry_date else '' }}')"
+                                style="background: #e0e7ff; color: #3730a3; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <form action="{{ url_for('admin_delete_offer', offer_id=offer.id) }}" method="POST"
+                                style="display: inline;">
+                                <button type="submit"
+                                    onclick="return confirm('Are you sure you want to delete this offer?')"
+                                    style="background: #fee2e2; color: #b91c1c; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 2rem; color: #6b7280;">
+        <p>No active offers. Click "Add New Offer" to create one.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Recent Activity -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+    <!-- Recent Users -->
+    <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h3 style="margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fas fa-user-plus"></i> Recent Users
+        </h3>
+        {% for user in recent_users %}
+        <div
+            style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f9fafb; border-radius: 8px; margin-bottom: 0.5rem;">
+            <div
+                style="width: 40px; height: 40px; background: {% if user.role == 'doctor' %}#2E8B57{% elif user.role == 'admin' %}#667eea{% else %}#f093fb{% endif %}; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                <i
+                    class="fas {% if user.role == 'doctor' %}fa-user-md{% elif user.role == 'admin' %}fa-user-shield{% else %}fa-user{% endif %}"></i>
+            </div>
+            <div style="flex: 1;">
+                <h4 style="margin: 0; font-weight: 600;">{{ user.username }}</h4>
+                <p style="margin: 0; color: #6b7280; font-size: 0.9rem;">{{ user.role.title() }} • {{ user.email }}
+                </p>
+            </div>
+            <span
+                style="background: {% if user.role == 'doctor' %}#d1fae5{% elif user.role == 'admin' %}#e0e7ff{% else %}#fce7f3{% endif %}; color: {% if user.role == 'doctor' %}#065f46{% elif user.role == 'admin' %}#3730a3{% else %}#be185d{% endif %}; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
+                {{ user.role.title() }}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Recent Appointments -->
+    <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h3 style="margin-bottom: 1.5rem; font-weight: 600;">
+            <i class="fas fa-calendar-alt"></i> Recent Appointments
+        </h3>
+        {% for appointment in recent_appointments %}
+        <div
+            style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: #f9fafb; border-radius: 8px; margin-bottom: 0.5rem;">
+            <div
+                style="width: 40px; height: 40px; background: #4facfe; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div style="flex: 1;">
+                <h4 style="margin: 0; font-weight: 600;">Patient → Doctor</h4>
+                <p style="margin: 0; color: #6b7280; font-size: 0.9rem;">{{ appointment.date_time.strftime('%Y-%m-%d
+                    %I:%M %p') }}</p>
+            </div>
+            <span
+                style="background: {% if appointment.status == 'Completed' %}#d1fae5{% elif appointment.status == 'Scheduled' %}#dbeafe{% else %}#fef3c7{% endif %}; color: {% if appointment.status == 'Completed' %}#065f46{% elif appointment.status == 'Scheduled' %}#1e40af{% else %}#92400e{% endif %}; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
+                {{ appointment.status }}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</div>
+</div>
+
+<!-- Add Doctor Modal -->
+<div id="addDoctorModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div
+        style="background: white; width: 90%; max-width: 500px; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: fadeInUp 0.3s ease;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0; color: #1a1a2e;"><i class="fas fa-user-md"></i> Add New Doctor</h3>
+            <button onclick="closeAddDoctorModal()"
+                style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+        </div>
+
+        <form action="{{ url_for('add_doctor') }}" method="POST">
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Full Name</label>
+                <input type="text" name="name" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;"
+                    placeholder="Dr. John Doe">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Email Address</label>
+                <input type="email" name="email" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;"
+                    placeholder="doctor@mediscan.com">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Specialization</label>
+                    <select name="specialization" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                        <option value="">Select...</option>
+                        <option value="Cardiologist">Cardiologist</option>
+                        <option value="Dermatologist">Dermatologist</option>
+                        <option value="General Physician">General Physician</option>
+                        <option value="Neurologist">Neurologist</option>
+                        <option value="Pediatrician">Pediatrician</option>
+                        <option value="Psychiatrist">Psychiatrist</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Hospital</label>
+                    <input type="text" name="hospital" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;"
+                        placeholder="City Hospital">
+                </div>
+            </div>
+
+            <div
+                style="background: #f0fdf4; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; border-left: 4px solid #166534;">
+                <p style="margin: 0; font-size: 0.9rem; color: #166534;">
+                    <i class="fas fa-info-circle"></i> Credentials will be emailed to the doctor automatically.
+                </p>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                <button type="button" onclick="closeAddDoctorModal()"
+                    style="padding: 0.75rem 1.5rem; border: 1px solid #d1d5db; background: white; border-radius: 6px; cursor: pointer;">Cancel</button>
+                <button type="submit"
+                    style="padding: 0.75rem 1.5rem; background: #166534; color: white; border: none; border-radius: 6px; cursor: pointer;">Add
+                    Doctor</button>
+            </div>
+    </div>
+    </form>
+</div>
+</div>
+
+<!-- Edit Offer Modal -->
+<div id="editOfferModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div
+        style="background: white; width: 90%; max-width: 600px; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: fadeInUp 0.3s ease; max-height: 90vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0; color: #1a1a2e;"><i class="fas fa-edit"></i> Edit Offer</h3>
+            <button onclick="closeEditOfferModal()"
+                style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+        </div>
+
+        <form id="editOfferForm" method="POST">
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Offer Title</label>
+                <input type="text" name="title" id="edit_title" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Description</label>
+                <input type="text" name="description" id="edit_description" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Discounted Price (₹)</label>
+                    <input type="text" name="price" id="edit_price" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Original Price (₹)</label>
+                    <input type="text" name="original_price" id="edit_original_price" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Discount Label</label>
+                    <input type="text" name="discount_label" id="edit_discount_label" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Expiry Date & Time</label>
+                    <input type="datetime-local" name="expiry_date" id="edit_expiry_date"
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Card Color Theme</label>
+                <select name="background_gradient" id="edit_background_gradient" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                    <option value="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">Purple/Blue (Default)</option>
+                    <option value="linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)">Pink/Soft Red
+                    </option>
+                    <option value="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">Cyan/Blue</option>
+                    <option value="linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)">Green/Mint</option>
+                    <option value="linear-gradient(135deg, #fa709a 0%, #fee140 100%)">Yellow/Orange</option>
+                </select>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                <button type="button" onclick="closeEditOfferModal()"
+                    style="padding: 0.75rem 1.5rem; border: 1px solid #d1d5db; background: white; border-radius: 6px; cursor: pointer;">Cancel</button>
+                <button type="submit"
+                    style="padding: 0.75rem 1.5rem; background: #3730a3; color: white; border: none; border-radius: 6px; cursor: pointer;">Update
+                    Offer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditOfferModal(id, title, description, price, original_price, discount_label, background_gradient, expiry_date) {
+        document.getElementById('editOfferModal').style.display = 'flex';
+
+        // Populate form fields
+        document.getElementById('edit_title').value = title;
+        document.getElementById('edit_description').value = description;
+        document.getElementById('edit_price').value = price;
+        document.getElementById('edit_original_price').value = original_price;
+        document.getElementById('edit_discount_label').value = discount_label;
+        document.getElementById('edit_background_gradient').value = background_gradient;
+
+        // Handle expiry date format for input type="datetime-local"
+        if (expiry_date && expiry_date !== 'None' && expiry_date !== '') {
+            document.getElementById('edit_expiry_date').value = expiry_date;
+        } else {
+            document.getElementById('edit_expiry_date').value = '';
+        }
+
+        // Set form action
+        document.getElementById('editOfferForm').action = "/admin/edit_offer/" + id;
+    }
+
+    function closeEditOfferModal() {
+        document.getElementById('editOfferModal').style.display = 'none';
+    }
+
+    function openAddDoctorModal() {
+        document.getElementById('addDoctorModal').style.display = 'flex';
+    }
+
+    function closeAddDoctorModal() {
+        document.getElementById('addDoctorModal').style.display = 'none';
+    }
+
+    function openAddOfferModal() {
+        document.getElementById('addOfferModal').style.display = 'flex';
+    }
+
+    function closeAddOfferModal() {
+        document.getElementById('addOfferModal').style.display = 'none';
+    }
+
+    // Close modal if clicked outside
+    window.onclick = function (event) {
+        if (event.target == document.getElementById('addDoctorModal')) {
+            closeAddDoctorModal();
+        }
+        if (event.target == document.getElementById('addOfferModal')) {
+            closeAddOfferModal();
+        }
+    }
+</script>
+
+<script src="{{ url_for('static', filename='vendor/chartjs/chart.min.js') }}"></script>
+<script>
+    function exportData() {
+        // Collect data from the charts/backend data arrays
+        const userGrowth = {{ user_growth | tojson | safe
+    }};
+    const revenueGrowth = {{ revenue_growth | tojson | safe }};
+
+    let csvContent = "data:text/csv;charset=utf-8,";
+
+    // Header
+    csvContent += "Category,Month,Value 1,Value 2\n";
+
+    // User Growth Data
+    userGrowth.forEach(row => {
+        csvContent += `User Growth,${row.month},Total: ${row.total},Patients: ${row.patients}\n`;
+    });
+
+    // Revenue Data
+    revenueGrowth.forEach(row => {
+        csvContent += `Revenue Analytics,${row.month},Revenue: ₹${row.revenue},Commission: ₹${row.commission}\n`;
+    });
+
+    // Create download link
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    const date = new Date().toISOString().split('T')[0];
+    link.setAttribute("download", `mediscan_analytics_${date}.csv`);
+    document.body.appendChild(link);
+
+    // Trigger download
+    link.click();
+    document.body.removeChild(link);
+    }
+
+    function viewSystemLogs() {
+        alert('System logs functionality would be implemented here');
+    }
+
+    // Chart.js Configuration
+    Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+    Chart.defaults.color = '#6b7280';
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Safely parse data from backend
+        const userGrowthData = {{ user_growth | tojson | safe
+    }};
+    const revenueGrowthData = {{ revenue_growth | tojson | safe }};
+    const geographicData = {{ geographic_data | tojson | safe }};
+    const featureUsageData = {{ feature_usage | tojson | safe }};
+
+    // User Growth Chart
+    const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
+    new Chart(userGrowthCtx, {
+        type: 'line',
+        data: {
+            labels: userGrowthData.map(m => m.month),
+            datasets: [{
+                label: 'Total Users',
+                data: userGrowthData.map(m => m.total),
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4
+            }, {
+                label: 'Patients',
+                data: userGrowthData.map(m => m.patients),
+                borderColor: '#f093fb',
+                backgroundColor: 'rgba(240, 147, 251, 0.1)',
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4
+            }, {
+                label: 'Doctors',
+                data: userGrowthData.map(m => m.doctors),
+                borderColor: '#2E8B57',
+                backgroundColor: 'rgba(46, 139, 87, 0.1)',
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(0,0,0,0.1)' }
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'bar',
+        data: {
+            labels: revenueGrowthData.map(m => m.month),
+            datasets: [{
+                label: 'Revenue (₹)',
+                data: revenueGrowthData.map(m => m.revenue),
+                backgroundColor: 'rgba(79, 172, 254, 0.8)',
+                borderColor: '#4facfe',
+                borderWidth: 1,
+                borderRadius: 4
+            }, {
+                label: 'Commission (₹)',
+                data: revenueGrowthData.map(m => m.commission),
+                backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                borderColor: '#22c55e',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function (value) {
+                            return '₹' + value.toLocaleString();
+                        }
+                    },
+                    grid: { color: 'rgba(0,0,0,0.1)' }
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Geographic Distribution Chart
+    const geographicCtx = document.getElementById('geographicChart').getContext('2d');
+    new Chart(geographicCtx, {
+        type: 'doughnut',
+        data: {
+            labels: geographicData.map(d => d.state),
+            datasets: [{
+                data: geographicData.map(d => d.users),
+                backgroundColor: ['#667eea', '#2E8B57', '#f093fb', '#4facfe', '#fbbf24'],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'right' },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const percentage = (context.parsed / context.dataset.data.reduce((a, b) => a + b, 0) * 100).toFixed(1);
+                            return context.label + ': ' + context.parsed + ' users (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Feature Usage Chart
+    const featureUsageCtx = document.getElementById('featureUsageChart').getContext('2d');
+    new Chart(featureUsageCtx, {
+        type: 'bar',
+        data: {
+            labels: featureUsageData.map(f => f.feature),
+            datasets: [{
+                label: 'Usage %',
+                data: featureUsageData.map(f => f.usage),
+                backgroundColor: [
+                    'rgba(102, 126, 234, 0.8)',
+                    'rgba(46, 139, 87, 0.8)',
+                    'rgba(240, 147, 251, 0.8)',
+                    'rgba(79, 172, 254, 0.8)',
+                    'rgba(251, 191, 36, 0.8)'
+                ],
+                borderColor: ['#667eea', '#2E8B57', '#f093fb', '#4facfe', '#fbbf24'],
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function (value) { return value + '%'; }
+                    },
+                    grid: { color: 'rgba(0,0,0,0.1)' }
+                },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Create Gauge Charts
+    createGaugeChart('completionGauge', {{ stats.completion_rate }}, '#059669');
+    createGaugeChart('growthGauge', {{ stats.growth_rate }}, '#0ea5e9');
+    createGaugeChart('retentionGauge', {{ stats.user_retention }}, '#7c3aed');
+
+    // Animate charts on scroll
+    const charts = document.querySelectorAll('canvas');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                observer.unobserve(entry.target); // Stop observing after animation
+            }
+        });
+    }, { threshold: 0.1 });
+
+    charts.forEach(chart => {
+        // Already visible check
+        const rect = chart.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom >= 0) {
+            chart.style.opacity = '1';
+            chart.style.transform = 'translateY(0)';
+        } else {
+            chart.style.opacity = '0';
+            chart.style.transform = 'translateY(20px)';
+            chart.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            observer.observe(chart);
+        }
+    });
+
+    // Auto-refresh system metrics every 30 seconds
+    setInterval(updateSystemMetrics, 30000);
+    });
+
+    // Function to create gauge charts
+    function createGaugeChart(canvasId, value, color) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [value, 100 - value],
+                    backgroundColor: [color, '#e5e7eb'],
+                    borderWidth: 0,
+                    cutout: '80%'
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                rotation: -90,
+                circumference: 180
+            }
+        });
+    }
+
+    // Function to update system metrics (simulated)
+    function updateSystemMetrics() {
+        // This would typically fetch real-time data from an API
+        console.log('Updating system metrics...');
+
+        // Add subtle animation to indicate live updates
+        const liveIndicator = document.querySelector('.fas.fa-circle');
+        if (liveIndicator) {
+            liveIndicator.style.animation = 'none';
+            setTimeout(() => {
+                liveIndicator.style.animation = 'pulse 2s infinite';
+            }, 100);
+        }
+    }
+</script>
+
+<style>
+    /* Hover effects for clickable cards */
+    a[href*="admin_view"] div:hover,
+    a[href*="admin_manage"] div:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    a[href*="admin_view"] div,
+    a[href*="admin_manage"] div {
+        transition: all 0.3s ease;
+    }
+
+    /* Pulse animation for live indicator */
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    /* Chart container animations */
+    .chart-container {
+        transition: all 0.3s ease;
+    }
+
+    .chart-container:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    /* System health metrics hover effects */
+    .metric-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Loading animation for charts */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .chart-animate {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+    /* Gradient backgrounds for better visual appeal */
+    .gradient-bg-1 {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .gradient-bg-2 {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .gradient-bg-3 {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .gradient-bg-4 {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+
+    /* Responsive chart containers */
+    @media (max-width: 768px) {
+        .chart-container {
+            min-width: 100% !important;
+        }
+
+        .metric-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<!-- Edit Offer Modal -->
+<div id="editOfferModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div
+        style="background: white; width: 90%; max-width: 600px; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: fadeInUp 0.3s ease; max-height: 90vh; overflow-y: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0; color: #1a1a2e;"><i class="fas fa-edit"></i> Edit Offer</h3>
+            <button onclick="closeEditOfferModal()"
+                style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #6b7280;">&times;</button>
+        </div>
+
+        <form id="editOfferForm" method="POST">
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Offer Title</label>
+                <input type="text" name="title" id="edit_title" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Description</label>
+                <input type="text" name="description" id="edit_description" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Discounted Price (₹)</label>
+                    <input type="text" name="price" id="edit_price" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Original Price (₹)</label>
+                    <input type="text" name="original_price" id="edit_original_price" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Discount Label</label>
+                    <input type="text" name="discount_label" id="edit_discount_label" required
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Expiry Date & Time</label>
+                    <input type="datetime-local" name="expiry_date" id="edit_expiry_date"
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: #374151;">Card Color Theme</label>
+                <select name="background_gradient" id="edit_background_gradient" required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px;">
+                    <option value="linear-gradient(135deg, #667eea 0%, #764ba2 100%)">Purple/Blue (Default)</option>
+                    <option value="linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)">Pink/Soft Red
+                    </option>
+                    <option value="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">Cyan/Blue</option>
+                    <option value="linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)">Green/Mint</option>
+                    <option value="linear-gradient(135deg, #fa709a 0%, #fee140 100%)">Yellow/Orange</option>
+                </select>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 1rem;">
+                <button type="button" onclick="closeEditOfferModal()"
+                    style="padding: 0.75rem 1.5rem; border: 1px solid #d1d5db; background: white; border-radius: 6px; cursor: pointer;">Cancel</button>
+                <button type="submit"
+                    style="padding: 0.75rem 1.5rem; background: #3730a3; color: white; border: none; border-radius: 6px; cursor: pointer;">Update
+                    Offer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditOfferModal(id, title, description, price, original_price, discount_label, background_gradient, expiry_date) {
+        document.getElementById('editOfferModal').style.display = 'flex';
+
+        // Populate form fields
+        document.getElementById('edit_title').value = title;
+        document.getElementById('edit_description').value = description;
+        document.getElementById('edit_price').value = price;
+        document.getElementById('edit_original_price').value = original_price;
+        document.getElementById('edit_discount_label').value = discount_label;
+        document.getElementById('edit_background_gradient').value = background_gradient;
+
+        // Handle expiry date format for input type="datetime-local"
+        if (expiry_date && expiry_date !== 'None' && expiry_date !== '') {
+            document.getElementById('edit_expiry_date').value = expiry_date;
+        } else {
+            document.getElementById('edit_expiry_date').value = '';
+        }
+
+        // Set form action
+        document.getElementById('editOfferForm').action = "/admin/edit_offer/" + id;
+    }
+
+    function closeEditOfferModal() {
+        document.getElementById('editOfferModal').style.display = 'none';
+    }
+</script>
+{% endblock %}

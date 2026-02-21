@@ -1,0 +1,10 @@
+flask
+sqlalchemy
+flask_sqlalchemy
+pillow
+numpy
+flask-login
+flask-socketio
+eventlet
+werkzeug
+faker

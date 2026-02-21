@@ -1,0 +1,1142 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Header / Search Section -->
+<!-- Hero Carousel -->
+<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" style="background: #ffffff;">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"
+            style="filter: invert(1);"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" style="filter: invert(1);"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" style="filter: invert(1);"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" style="filter: invert(1);"></button>
+    </div>
+
+    <div class="carousel-inner">
+        <!-- Slide 1: Welcome -->
+        <div class="carousel-item active">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center">
+                    <div class="col-lg-6 text-start py-5">
+                        <div class="animate-up hero-text-shadow">
+                            <span class="badge bg-success mb-3 px-3 py-2 rounded-pill">Welcome to MediScan</span>
+                            <h1 class="display-3 fw-bold mb-3 text-dark">Your Health, <span
+                                    style="color: #2E8B57;">Reimagined.</span></h1>
+                            <p class="fs-4 mb-4 text-muted">Advanced AI analysis for your medical reports. Instant
+                                results, better health decisions.</p>
+                            <div class="d-flex gap-3">
+                                <a href="#active-content" class="btn btn-primary btn-lg rounded-pill px-5 shadow">Get
+                                    Started</a>
+                                <a href="{{ url_for('about') }}"
+                                    class="btn btn-outline-dark btn-lg rounded-pill px-5">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-none d-lg-block">
+                        <img src="https://images.unsplash.com/photo-1638202993928-7267aad84c31?auto=format&fit=crop&q=80"
+                            alt="Medical Team" class="img-fluid rounded-4 shadow-lg animate-up animate-delay-1"
+                            style="object-fit: cover; height: 550px; width: 100%; border: 4px solid #ffffff;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Dr. AUGUST AI -->
+        <div class="carousel-item">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center">
+                    <div class="col-lg-6 text-start py-5">
+                        <div class="animate-up hero-text-shadow">
+                            <span class="badge bg-primary mb-3 px-3 py-2 rounded-pill">AI Assistant</span>
+                            <h1 class="display-3 fw-bold mb-3 text-dark">Meet <span style="color: #4b6cb7;">Dr. AUGUST
+                                    AI</span></h1>
+                            <p class="fs-4 mb-4 text-muted">24/7 Medical support. Chat with our advanced AI, upload
+                                reports, and get instant detailed analysis.</p>
+                            <div class="d-flex gap-3">
+                                <a href="{{ url_for('dr_august_ai') }}"
+                                    class="btn btn-primary btn-lg rounded-pill px-5 shadow"
+                                    style="background: #4b6cb7; border-color: #4b6cb7;">
+                                    <i class="fas fa-robot me-2"></i>Start Chat
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-none d-lg-block">
+                        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80"
+                            alt="AI Doctor" class="img-fluid rounded-4 shadow-lg animate-up animate-delay-1"
+                            style="object-fit: cover; height: 550px; width: 100%; border: 4px solid #ffffff;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Teleconsultation -->
+        <div class="carousel-item">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center">
+                    <div class="col-lg-6 text-start py-5">
+                        <div class="animate-up hero-text-shadow">
+                            <span class="badge bg-info text-dark mb-3 px-3 py-2 rounded-pill">Telemedicine</span>
+                            <h1 class="display-3 fw-bold mb-3 text-dark">Instant <span
+                                    style="color: #10b981;">Consultations</span></h1>
+                            <p class="fs-4 mb-4 text-muted">Connect with top specialists in under 60 seconds. Video
+                                consults from the comfort of home.</p>
+                            <div class="d-flex gap-3">
+                                <a href="{{ url_for('doctors') }}"
+                                    class="btn btn-success btn-lg rounded-pill px-5 shadow"
+                                    style="background: #10b981; border-color: #10b981;">Find Doctors</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-none d-lg-block">
+                        <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80"
+                            alt="Doctor Consultation" class="img-fluid rounded-4 shadow-lg animate-up animate-delay-1"
+                            style="object-fit: cover; height: 550px; width: 100%; border: 4px solid #ffffff;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Medicine -->
+        <div class="carousel-item">
+            <div class="container h-100">
+                <div class="row h-100 align-items-center">
+                    <div class="col-lg-6 text-start py-5">
+                        <div class="animate-up hero-text-shadow">
+                            <span class="badge bg-warning text-dark mb-3 px-3 py-2 rounded-pill">Pharmacy</span>
+                            <h1 class="display-3 fw-bold mb-3 text-dark">Smart <span style="color: #2563eb;">Med
+                                    Tracking</span></h1>
+                            <p class="fs-4 mb-4 text-muted">Never miss a dose. Automated stock alerts and easy refills
+                                for you and your family.</p>
+                            <div class="d-flex gap-3">
+                                <a href="{{ url_for('medicine_tracker') }}"
+                                    class="btn btn-primary btn-lg rounded-pill px-5 shadow"
+                                    style="background: #2563eb; border-color: #2563eb;">View Tracker</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 d-none d-lg-block">
+                        <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&q=80"
+                            alt="Medicine" class="img-fluid rounded-4 shadow-lg animate-up animate-delay-1"
+                            style="object-fit: cover; height: 550px; width: 100%; border: 4px solid #ffffff;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev"
+        style="width: 5%; filter: invert(1);">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next"
+        style="width: 5%; filter: invert(1);">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<!-- Search Section (Moved Below) -->
+<section id="active-content" class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="mb-4">What are you looking for?</h2>
+        <form action="{{ url_for('search') }}" method="GET" class="search-bar shadow-lg">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" name="q" placeholder="Search for doctors, medicines, symptoms..." class="border-0 w-100"
+                style="outline:none;">
+            <button type="submit" class="btn btn-primary rounded-pill">Search</button>
+        </form>
+    </div>
+</section>
+
+<!-- Main Floating Content -->
+<div class="main-content">
+
+    <!-- Hero Banner / Offers -->
+    <div class="banner-row"
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+
+        {% for offer in offers %}
+        <div class="offer-card"
+            style="background: {{ offer.background_gradient }}; color: {% if 'white' in offer.background_gradient or '000' in offer.background_gradient %}white{% else %}#1a1a2e{% endif %}; padding: 1.5rem; border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+            <div style="position: relative; z-index: 2;">
+                <span class="badge bg-warning text-dark mb-2">{{ offer.discount_label }}</span>
+                <h3 style="font-weight: 700; margin-bottom: 0.5rem; color: inherit;">{{ offer.title }}</h3>
+                <p style="opacity: 0.9; margin-bottom: 1rem; color: inherit;">{{ offer.description }}</p>
+
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <span style="font-size: 1.5rem; font-weight: 800;">₹{{ offer.price }}</span>
+                    <span style="text-decoration: line-through; opacity: 0.7;">₹{{ offer.original_price }}</span>
+                </div>
+
+                {% if offer.expiry_date %}
+                <div class="countdown-container" data-expiry="{{ offer.expiry_date.isoformat() }}"
+                    style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; background: rgba(255,255,255,0.9); padding: 0.5rem; border-radius: 8px; width: fit-content;">
+                    <i class="fas fa-clock"></i>
+                    <span class="timer-display" style="font-weight: 600;">Loading...</span>
+                </div>
+                {% endif %}
+
+                {% if current_user.is_authenticated %}
+                <button onclick="openPaymentModal('{{ offer.title }}', {{ offer.price }})"
+                    class="btn btn-light rounded-pill px-4"
+                    style="color: #333; font-weight: 700; text-decoration: none; border: none;">Book Now</button>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-light rounded-pill px-4"
+                    style="color: #333; font-weight: 700; text-decoration: none; border: none;">Login to Book</a>
+                {% endif %}
+            </div>
+            <!-- Decorative Icon based on title/category logic could go here, randomized for now -->
+            <i class="fas fa-heartbeat"
+                style="position: absolute; right: -20px; bottom: -20px; font-size: 10rem; opacity: 0.1; transform: rotate(-15deg);"></i>
+        </div>
+        {% else %}
+        <!-- Fallback if no offers -->
+        <div class="offer-card"
+            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 16px; position: relative; overflow: hidden; box-shadow: 0 10px 20px rgba(118, 75, 162, 0.3);">
+            <div style="position: relative; z-index: 2;">
+                <span class="badge bg-warning text-dark mb-2">WELCOME OFFER</span>
+                <h3 style="font-weight: 700; margin-bottom: 0.5rem;">Total Health Package</h3>
+                <p style="opacity: 0.9; margin-bottom: 1rem;">Includes 60+ Tests • Full Body Checkup</p>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <span style="font-size: 1.5rem; font-weight: 800;">₹999</span>
+                    <span style="text-decoration: line-through; opacity: 0.7;">₹2999</span>
+                    <span
+                        style="background: rgba(255,255,255,0.2); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem;">67%
+                        OFF</span>
+                </div>
+                {% if current_user.is_authenticated %}
+                <button onclick="openPaymentModal('Total Health Package', 999)" class="btn btn-light rounded-pill px-4"
+                    style="color: #764ba2; font-weight: 700; text-decoration: none; border: none;">Book Now</button>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-light rounded-pill px-4"
+                    style="color: #764ba2; font-weight: 700; text-decoration: none; border: none;">Login to Book</a>
+                {% endif %}
+            </div>
+            <i class="fas fa-heartbeat"
+                style="position: absolute; right: -20px; bottom: -20px; font-size: 10rem; opacity: 0.1; transform: rotate(-15deg);"></i>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Primary Actions -->
+    <div class="action-row">
+        <!-- Physical Appointment -->
+        <a href="{{ url_for('doctors') }}" class="action-card" style="text-decoration: none; color: inherit;">
+            <div class="action-info">
+                <h3>Physical<br>Appointment</h3>
+                <span>At Hospital</span>
+            </div>
+            <div style="background: #e0f2fe; padding: 1rem; border-radius: 50%;">
+                <i class="fa-solid fa-user-doctor" style="font-size: 2rem; color: var(--primary-color);"></i>
+            </div>
+        </a>
+
+        <!-- Video Consult -->
+        <a href="{{ url_for('doctors') }}" class="action-card" style="text-decoration: none; color: inherit;">
+            <div class="action-info">
+                <h3>Instant Video<br>Consult</h3>
+                <span>Connect in 60s</span>
+            </div>
+            <div style="background: #f0fdf4; padding: 1rem; border-radius: 50%;">
+                <i class="fa-solid fa-video" style="font-size: 2rem; color: var(--success);"></i>
+            </div>
+        </a>
+    </div>
+
+    <!-- Tracker & Analysis Section -->
+    <div style="text-align: center; margin: 2rem 0 1rem 0;">
+        <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-chart-line"></i> Tracker & Analysis
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Monitor your health with AI-powered tools</p>
+    </div>
+
+    <!-- Quick Services -->
+    <div class="services-row">
+        <a href="{{ url_for('medicine_tracker') }}" class="service-card"
+            style="text-decoration: none; color: inherit; transition: all 0.3s ease;">
+            <div
+                style="width: 80px; height: 80px; background: linear-gradient(135deg, #3b82f6, #2563eb); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);">
+                <i class="fa-solid fa-pills" style="font-size: 2rem; color: white;"></i>
+            </div>
+            <h4 style="margin-bottom: 0.5rem;">Medicine Tracker</h4>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Track & Manage</span>
+        </a>
+        <a href="{{ url_for('lab_analysis') }}" class="service-card"
+            style="text-decoration: none; color: inherit; transition: all 0.3s ease;">
+            <div
+                style="width: 80px; height: 80px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
+                <i class="fa-solid fa-flask" style="font-size: 2rem; color: white;"></i>
+            </div>
+            <h4 style="margin-bottom: 0.5rem;">Lab Result Analysis</h4>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">AI-Powered Analysis</span>
+        </a>
+        <a href="{{ url_for('prevention') }}" class="service-card"
+            style="text-decoration: none; color: inherit; transition: all 0.3s ease;">
+            <div
+                style="width: 80px; height: 80px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); border: 3px solid white; position: relative;">
+                <!-- Using Mediscan Logo Icon Style -->
+                <i class="fa-solid fa-shield-virus" style="font-size: 2.2rem; color: white;"></i>
+                <div
+                    style="position: absolute; top: 0; right: 0; background: #ef4444; width: 15px; height: 15px; border-radius: 50%; border: 2px solid white;">
+                </div>
+            </div>
+            <h4 style="margin-bottom: 0.5rem;">Prevention</h4>
+            <span style="font-size: 0.8rem; color: var(--text-secondary);">Safety & Hygiene</span>
+        </a>
+    </div>
+
+    <!-- Service Highlights Carousel (Enhanced Visuals) -->
+    <section class="py-5" style="background: #fdfdfd;">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-dark m-0" style="font-family: 'Outfit', sans-serif;">Explore Services</h2>
+            </div>
+
+            <div class="position-relative">
+                <!-- Navigation Buttons -->
+                <button class="carousel-nav-btn prev" onclick="scrollServices(-300)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-nav-btn next" onclick="scrollServices(300)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <!-- Carousel Container -->
+                <div class="service-scroll-container" id="serviceScroll">
+                    <!-- Content remains same -->
+                    <!-- Card 1: Special Offer (Kept distinct) -->
+                    <div class="service-highlight-card special-offer-card">
+                        <div class="card-content">
+                            <span class="badge bg-warning text-dark mb-2">New User?</span>
+                            <h5 class="fw-bold mb-1">First Time Here?</h5>
+                            <p class="small mb-3 opacity-75">Get <strong>₹100 OFF</strong> on 1st Doctor Booking</p>
+                            <button class="btn btn-sm btn-dark rounded-pill px-3" onclick="openPromoModal()">Explore
+                                Now</button>
+                        </div>
+                        <div class="card-icon-bg">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Medicine Tracker -->
+                    <a href="{{ url_for('medicine_tracker') }}" class="service-highlight-card image-card">
+                        <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&q=60&w=400"
+                            alt="Medicine Tracker" loading="lazy" class="card-bg-img">
+                        <div class="card-overlay">
+                            <div class="card-content">
+                                <h5 class="fw-bold mb-1"
+                                    style="color: #4ade80; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">
+                                    Track Meds</h5>
+                                <p class="small mb-0"
+                                    style="color: #4ade80; text-shadow: 0 1px 2px rgba(0,0,0,0.9); font-weight: 600;">
+                                    Never
+                                    miss a dose</p>
+                            </div>
+                            <div class="card-icon-small">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Card 3: Report Analysis -->
+                    <a href="{{ url_for('lab_analysis') }}" class="service-highlight-card image-card">
+                        <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&q=60&w=400"
+                            alt="Report Analysis" loading="lazy" class="card-bg-img">
+                        <div class="card-overlay">
+                            <div class="card-content">
+                                <h5 class="fw-bold mb-1"
+                                    style="color: #4ade80; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">
+                                    Analyze Reports</h5>
+                                <p class="small mb-0"
+                                    style="color: #4ade80; text-shadow: 0 1px 2px rgba(0,0,0,0.9); font-weight: 600;">AI
+                                    Lab
+                                    Insights</p>
+                            </div>
+                            <div class="card-icon-small">
+                                <i class="fas fa-microscope"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Card 4: Health Analytics -->
+                    <a href="{{ url_for('health_tracker') }}" class="service-highlight-card image-card">
+                        <img src="https://images.unsplash.com/photo-1583324113626-70df0f4deaab?auto=format&fit=crop&q=60&w=400"
+                            alt="Health Analytics" loading="lazy" class="card-bg-img">
+                        <div class="card-overlay">
+                            <div class="card-content">
+                                <h5 class="fw-bold mb-1"
+                                    style="color: #4ade80; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">
+                                    Vital Stats</h5>
+                                <p class="small mb-0"
+                                    style="color: #4ade80; text-shadow: 0 1px 2px rgba(0,0,0,0.9); font-weight: 600;">
+                                    Monitor BP & Heart</p>
+                            </div>
+                            <div class="card-icon-small">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Card 5: Dr. August AI -->
+                    <a href="{{ url_for('dr_august_ai') }}" class="service-highlight-card image-card">
+                        <img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&q=60&w=400"
+                            alt="Dr. August AI" loading="lazy" class="card-bg-img">
+                        <div class="card-overlay">
+                            <div class="card-content">
+                                <h5 class="fw-bold mb-1"
+                                    style="color: #4ade80; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">
+                                    Chat with AI</h5>
+                                <p class="small mb-0"
+                                    style="color: #4ade80; text-shadow: 0 1px 2px rgba(0,0,0,0.9); font-weight: 600;">
+                                    24/7
+                                    Medical Advice</p>
+                            </div>
+                            <div class="card-icon-small">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Card 6: Find Doctors -->
+                    <a href="{{ url_for('doctors') }}" class="service-highlight-card image-card">
+                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=60&w=400"
+                            alt="Find Doctors" loading="lazy" class="card-bg-img">
+                        <div class="card-overlay">
+                            <div class="card-content">
+                                <h5 class="fw-bold mb-1"
+                                    style="color: #4ade80; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">
+                                    Expert Doctors</h5>
+                                <p class="small mb-0"
+                                    style="color: #4ade80; text-shadow: 0 1px 2px rgba(0,0,0,0.9); font-weight: 600;">
+                                    Book
+                                    Consultations</p>
+                            </div>
+                            <div class="card-icon-small">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Card 7: Family Health -->
+                    <a href="{{ url_for('dependents') }}" class="service-highlight-card image-card">
+                        <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=60&w=400"
+                            alt="Family Care" loading="lazy" class="card-bg-img">
+                        <div class="card-overlay">
+                            <div class="card-content">
+                                <h5 class="fw-bold mb-1"
+                                    style="color: #4ade80; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">
+                                    Family Care</h5>
+                                <p class="small mb-0"
+                                    style="color: #4ade80; text-shadow: 0 1px 2px rgba(0,0,0,0.9); font-weight: 600;">
+                                    Manage
+                                    Dependents</p>
+                            </div>
+                            <div class="card-icon-small">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Card 8: Prevention -->
+                    <a href="{{ url_for('prevention') }}" class="service-highlight-card image-card">
+                        <img src="https://images.unsplash.com/photo-1584634731339-252c581abfc5?auto=format&fit=crop&q=60&w=400"
+                            alt="Prevention" loading="lazy" class="card-bg-img">
+                        <div class="card-overlay">
+                            <div class="card-content">
+                                <h5 class="fw-bold mb-1"
+                                    style="color: #4ade80; text-shadow: 0 2px 4px rgba(0,0,0,0.9);">
+                                    Stay Safe</h5>
+                                <p class="small mb-0"
+                                    style="color: #4ade80; text-shadow: 0 1px 2px rgba(0,0,0,0.9); font-weight: 600;">
+                                    Hygiene Guide</p>
+                            </div>
+                            <div class="card-icon-small">
+                                <i class="fas fa-shield-virus"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+    </section>
+
+    <!-- Promo Modal -->
+    <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content text-center overflow-hidden border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header bg-success text-white border-0 justify-content-center py-4"
+                    style="background: linear-gradient(135deg, #2E8B57, #3CB371) !important;">
+                    <h5 class="modal-title fw-bold">🎉 Congratulations!</h5>
+                    <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+                        data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="mb-3">You've unlocked a special discount for your first booking!</p>
+                    <div class="bg-light border border-success border-dashed p-3 rounded-3 mb-3">
+                        <small class="text-uppercase text-muted fw-bold">Use Coupon Code</small>
+                        <h3 class="fw-bold text-success m-0" id="couponCode">MEDISCAN100</h3>
+                    </div>
+                    <p class="small text-muted mb-0">Flat ₹100 OFF on any doctor consultation.</p>
+                </div>
+                <div class="modal-footer justify-content-center border-0 pb-4">
+                    <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm" data-bs-dismiss="modal"
+                        onclick="copyCoupon()">Copy Code</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .service-scroll-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 1.5rem;
+            padding: 1rem 0.5rem;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE 10+ */
+        }
+
+        .service-scroll-container::-webkit-scrollbar {
+            display: none;
+            /* Chrome/Safari */
+        }
+
+        .service-highlight-card {
+            min-width: 260px;
+            max-width: 260px;
+            height: 180px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .service-highlight-card.image-card {
+            border: none;
+            position: relative;
+        }
+
+        .card-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            transition: transform 0.5s ease;
+        }
+
+        .service-highlight-card:hover .card-bg-img {
+            transform: scale(1.1);
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0));
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .card-icon-small {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .service-highlight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(46, 139, 87, 0.25);
+        }
+
+        /* Special styling for the first offer card */
+        .special-offer-card {
+            min-width: 260px;
+            max-width: 260px;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1px solid #fcd34d;
+            padding: 1.25rem;
+        }
+
+        .special-offer-card .card-icon-bg {
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 6rem;
+            color: #fbbf24;
+            opacity: 0.2;
+            transform: rotate(-15deg);
+        }
+
+        .opacity-90 {
+            opacity: 0.9;
+        }
+
+        /* Navigation Buttons */
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        .carousel-nav-btn:hover {
+            background: #4ade80;
+            color: white;
+            box-shadow: 0 8px 20px rgba(74, 222, 128, 0.4);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-nav-btn.prev {
+            left: -15px;
+        }
+
+        .carousel-nav-btn.next {
+            right: -15px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-nav-btn {
+                display: none;
+            }
+
+            /* Hide on mobile, use swipe */
+        }
+    </style>
+
+    <script>
+        // Manual Scroll with Reset
+        function scrollServices(offset) {
+            const container = document.getElementById('serviceScroll');
+            if (container) {
+                container.scrollBy({ left: offset, behavior: 'smooth' });
+                resetAutoScroll(); // Reset timer on manual interaction
+            }
+        }
+
+        function openPromoModal() {
+            const modalEl = document.getElementById('promoModal');
+            if (modalEl) {
+                new bootstrap.Modal(modalEl).show();
+            }
+        }
+
+        function copyCoupon() {
+            const codeEl = document.getElementById('couponCode');
+            if (codeEl) {
+                const code = codeEl.innerText;
+                navigator.clipboard.writeText(code);
+                alert('Coupon Copied: ' + code);
+            }
+        }
+
+        // --- Auto Scroll Logic ---
+        let scrollInterval;
+        const SCROLL_AMOUNT = 300; // Card width + gap
+        const SCROLL_DELAY = 3000; // 3 seconds
+
+        function startAutoScroll() {
+            stopAutoScroll(); // Clear any existing
+            scrollInterval = setInterval(() => {
+                const container = document.getElementById('serviceScroll');
+                if (!container) return;
+
+                // Check if we reached the end
+                const maxScroll = container.scrollWidth - container.clientWidth;
+
+                if (container.scrollLeft >= maxScroll - 10) {
+                    // Smooth snap back to start
+                    container.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    // Scroll forward
+                    container.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
+                }
+            }, SCROLL_DELAY);
+        }
+
+        function stopAutoScroll() {
+            if (scrollInterval) {
+                clearInterval(scrollInterval);
+                scrollInterval = null;
+            }
+        }
+
+        function resetAutoScroll() {
+            stopAutoScroll();
+            // Restart after a slightly longer delay to avoid fighting the user
+            setTimeout(startAutoScroll, 5000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('serviceScroll');
+            if (container) {
+                startAutoScroll();
+
+                // Pause on hover/touch
+                container.addEventListener('mouseenter', stopAutoScroll);
+                container.addEventListener('mouseleave', startAutoScroll);
+                container.addEventListener('touchstart', stopAutoScroll);
+                container.addEventListener('touchend', startAutoScroll);
+            }
+        });
+    </script>
+
+
+    <style>
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+
+    <style>
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            text-decoration: none;
+            color: inherit;
+            aspect-ratio: 1;
+        }
+
+        .category-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .cat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #10b981;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+            }
+
+            .category-item {
+                padding: 1rem;
+            }
+
+            .cat-icon {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+
+    <!-- Health Problems / Categories -->
+    <section class="categories-section">
+        <h2>Find a Doctor for your Health Problem</h2>
+        <div class="categories-grid">
+            <a href="{{ url_for('doctors_by_category', category='General Physician') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-stethoscope"></i></div>
+                <span>General Physician</span>
+            </a>
+            <a href="{{ url_for('doctors_by_category', category='Gynecologist') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-person-dress"></i></div>
+                <span>Women's Health</span>
+            </a>
+            <a href="{{ url_for('doctors_by_category', category='Pediatrician') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-baby"></i></div>
+                <span>Child Care</span>
+            </a>
+            <a href="{{ url_for('doctors_by_category', category='Dentist') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-tooth"></i></div>
+                <span>Dental Care</span>
+            </a>
+            <a href="{{ url_for('doctors_by_category', category='Psychiatrist') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-brain"></i></div>
+                <span>Mental Health</span>
+            </a>
+            <a href="{{ url_for('doctors_by_category', category='Orthopedic Surgeon') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-bone"></i></div>
+                <span>Ortho</span>
+            </a>
+            <a href="{{ url_for('doctors_by_category', category='Cardiologist') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                <span>Heart Care</span>
+            </a>
+            <a href="{{ url_for('doctors_by_category', category='Dermatologist') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-hand-dots"></i></div>
+                <span>Skin Care</span>
+            </a>
+            <a href="{{ url_for('doctors_by_category', category='Neurologist') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-head-side-virus"></i></div>
+                <span>Neuro Care</span>
+            </a>
+            <a href="{{ url_for('doctors_by_category', category='ENT Specialist') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-ear-listen"></i></div>
+                <span>ENT</span>
+            </a>
+            <a href="{{ url_for('doctors_by_category', category='Ophthalmologist') }}" class="category-item"
+                style="text-decoration: none; color: inherit;">
+                <div class="cat-icon"><i class="fa-solid fa-eye"></i></div>
+                <span>Eye Care</span>
+            </a>
+            <a href="{{ url_for('doctors') }}" class="category-item"
+                style="text-decoration: none; color: inherit; background: linear-gradient(135deg, #2E8B57, #3CB371); color: white;">
+                <div class="cat-icon" style="background: rgba(255,255,255,0.2);"><i class="fa-solid fa-user-doctor"></i>
+                </div>
+                <span style="font-weight: 600;">View All</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Dr. Digital AI Banner -->
+    <div class="bottom-banner"
+        style="background: linear-gradient(135deg, #2E8B57, #3CB371); border-radius: 16px; padding: 1.5rem; box-shadow: 0 8px 32px rgba(46, 139, 87, 0.3);">
+        <div style="display: flex; gap: 1.5rem; align-items: center;">
+            <div style="position: relative;">
+                <div
+                    style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse 2s infinite;">
+                    <i class="fa-solid fa-robot" style="font-size: 2rem; color: white;"></i>
+                </div>
+                <div
+                    style="position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; background: #10b981; border: 2px solid white; border-radius: 50%;">
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <h4 style="margin: 0; color: white; font-size: 1.3rem; font-weight: 700;">Dr. Digital AI</h4>
+                <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.9); font-size: 0.9rem;">24/7 AI Medical
+                    Assistant</p>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+                    <span
+                        style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: blink 1.5s infinite;"></span>
+                    <span style="color: rgba(255,255,255,0.9); font-size: 0.85rem;">Online Now</span>
+                </div>
+            </div>
+        </div>
+        <a href="{{ url_for('dr_august_ai') }}" class="btn"
+            style="background: white; color: #2E8B57; font-weight: 600; padding: 0.75rem 2rem; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease;">
+            <i class="fas fa-comments"></i> Chat Now
+        </a>
+    </div>
+
+    <style>
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .bottom-banner .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .offer-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .offer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2) !important;
+        }
+    </style>
+
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 bg-primary text-white rounded-top-4">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-shield-alt me-2"></i>Secure Payment</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Offer Details -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h6 class="text-muted mb-1">Paying for</h6>
+                            <h5 class="fw-bold text-dark mb-0" id="modal-offer-title">Offer Title</h5>
+                        </div>
+                        <div class="text-end">
+                            <h6 class="text-muted mb-1">Amount</h6>
+                            <h4 class="fw-bold text-primary mb-0">₹<span id="modal-offer-price">0</span></h4>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" style="opacity: 0.1;">
+
+                    <!-- Wallet Balance -->
+                    {% if current_user.is_authenticated %}
+                    <div class="bg-light p-3 rounded-3 mb-4 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-white p-2 rounded-circle shadow-sm me-3">
+                                <i class="fas fa-wallet text-success"></i>
+                            </div>
+                            <div>
+                                <small class="text-muted d-block">HealthSave Wallet</small>
+                                <span class="fw-bold text-dark">Balance: ₹{{ "%.2f"|format(current_user.wallet_balance)
+                                    }}</span>
+                            </div>
+                        </div>
+                        <div id="balance-status">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning mb-4">
+                        <small><i class="fas fa-info-circle"></i> Please log in to use your HealthSave Wallet.</small>
+                    </div>
+                    {% endif %}
+
+                    <!-- Actions -->
+                    <div class="d-grid gap-2">
+                        <button id="pay-btn" class="btn btn-success btn-lg rounded-pill fw-bold shadow-sm"
+                            onclick="processPayment()">
+                            Pay & Book Now <i class="fas fa-check-circle ms-2"></i>
+                        </button>
+                        <a href="{{ url_for('wallet') }}" id="topup-btn"
+                            class="btn btn-warning btn-lg rounded-pill fw-bold shadow-sm d-none">
+                            Top-up Wallet <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center border-0 bg-light rounded-bottom-4">
+                    <small class="text-muted"><i class="fas fa-lock me-1"></i> 100% Secure Transaction</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scratch Card Modal -->
+    <div class="modal fade" id="scratchModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 bg-transparent">
+                <div class="modal-body text-center" style="perspective: 1000px;">
+                    <div id="scratch-card"
+                        style="width: 300px; height: 300px; margin: 0 auto; position: relative; cursor: pointer; transform-style: preserve-3d; transition: transform 0.6s;">
+                        <!-- Front -->
+                        <div class="scratch-front"
+                            style="position: absolute; width: 100%; height: 100%; backface-visibility: hidden; background: linear-gradient(45deg, #FFD700, #FFA500); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);">
+                            <div class="text-white">
+                                <i class="fas fa-gift fa-4x mb-3 fa-beat"></i>
+                                <h3 class="fw-bold">You Won a Reward!</h3>
+                                <p>Tap to Scratch</p>
+                            </div>
+                        </div>
+                        <!-- Back -->
+                        <div class="scratch-back"
+                            style="position: absolute; width: 100%; height: 100%; backface-visibility: hidden; transform: rotateY(180deg); background: white; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+                            <div id="reward-icon" class="mb-3 display-4">🎉</div>
+                            <h4 id="reward-type" class="fw-bold text-primary mb-2">Reward Type</h4>
+                            <p id="reward-desc" class="text-muted mb-4">Description</p>
+                            <button class="btn btn-primary rounded-pill px-4" data-bs-dismiss="modal">Claim &
+                                Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentOfferPrice = 0;
+        let userBalance = {{ current_user.wallet_balance if current_user.is_authenticated else 0 }};
+
+        function openPaymentModal(title, price) {
+            currentOfferPrice = price;
+            document.getElementById('modal-offer-title').innerText = title;
+            document.getElementById('modal-offer-price').innerText = price;
+
+            const payBtn = document.getElementById('pay-btn');
+            const topupBtn = document.getElementById('topup-btn');
+            const statusDiv = document.getElementById('balance-status');
+
+            if (userBalance >= price) {
+                payBtn.classList.remove('d-none');
+                topupBtn.classList.add('d-none');
+                statusDiv.innerHTML = '<span class="badge bg-success rounded-pill"><i class="fas fa-check"></i> Sufficient</span>';
+            } else {
+                payBtn.classList.add('d-none');
+                topupBtn.classList.remove('d-none');
+                statusDiv.innerHTML = '<span class="badge bg-danger rounded-pill"><i class="fas fa-times"></i> Low Balance</span>';
+            }
+
+            new bootstrap.Modal(document.getElementById('paymentModal')).show();
+        }
+
+        async function processPayment() {
+            const btn = document.getElementById('pay-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            try {
+                const response = await fetch('/api/payment/process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: currentOfferPrice,
+                        description: document.getElementById('modal-offer-title').innerText
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Hide payment modal
+                    bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+
+                    // Setup Scratch Card
+                    document.getElementById('reward-type').innerText = result.reward.type;
+                    document.getElementById('reward-desc').innerText = result.reward.description;
+
+                    if (result.reward.type === 'Cashback') {
+                        document.getElementById('reward-icon').innerText = '💰';
+                    } else if (result.reward.type === 'Coupon') {
+                        document.getElementById('reward-icon').innerText = '🎟️';
+                    } else {
+                        document.getElementById('reward-icon').innerText = '🤞';
+                    }
+
+                    // Show Scratch Modal
+                    const scratchModal = new bootstrap.Modal(document.getElementById('scratchModal'));
+                    scratchModal.show();
+
+                    // Scratch Animation
+                    const card = document.getElementById('scratch-card');
+                    card.onclick = function () {
+                        this.style.transform = 'rotateY(180deg)';
+                        // Confetti effect could go here
+                    };
+
+                    // Update local balance for UI
+                    userBalance = result.new_balance;
+
+                } else {
+                    alert('Payment Failed: ' + result.message);
+                    btn.disabled = false;
+                    btn.innerHTML = 'Pay & Book Now <i class="fas fa-check-circle ms-2"></i>';
+                }
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred.');
+                btn.disabled = false;
+                btn.innerHTML = 'Pay & Book Now <i class="fas fa-check-circle ms-2"></i>';
+            }
+        }
+
+        // Multi-instance Countdown Timer
+        function updateTimers() {
+            const timers = document.querySelectorAll('.countdown-container');
+
+            timers.forEach(timer => {
+                const expiryStr = timer.getAttribute('data-expiry');
+                if (!expiryStr) return;
+
+                const expiryDate = new Date(expiryStr).getTime();
+                const now = new Date().getTime();
+                const distance = expiryDate - now;
+
+                const display = timer.querySelector('.timer-display');
+
+                if (distance < 0) {
+                    display.textContent = "EXPIRED";
+                    return;
+                }
+
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Format with leading zeros
+                const h = hours < 10 ? "0" + hours : hours;
+                const m = minutes < 10 ? "0" + minutes : minutes;
+                const s = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = `${h}h ${m}m ${s}s`;
+            });
+        }
+
+        // Update every second
+        setInterval(updateTimers, 1000);
+
+        // Initial call
+        document.addEventListener('DOMContentLoaded', updateTimers);
+    </script>
+
+</div>
+{% endblock %}
